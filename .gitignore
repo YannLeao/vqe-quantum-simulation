@@ -1,0 +1,30 @@
+# Arquivos específicos do Jupyter/Colab
+.ipynb_checkpoints/
+*.ipynb_checkpoints*
+**.ipynb_checkpoints*
+__pycache__/
+
+# Arquivos temporários/outputs
+*.tmp
+*.temp
+*.bak
+
+# Dados grandes ou sensíveis (não versionados)
+data/raw/
+data/external/
+outputs/
+models/
+
+# Configurações de IDE (PyCharm/VSCode)
+.idea/
+.vscode/
+*.iml
+
+# Saídas de notebooks
+notebooks/*.csv
+notebooks/*.png
+notebooks/.ipynb_checkpoints/
+notebooks/*.ipynb_checkpoints*
+
+# Credenciais
+.env
