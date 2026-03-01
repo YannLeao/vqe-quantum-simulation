@@ -1,17 +1,23 @@
 # Framework de computação quântica
-qiskit==2.1.2
-qiskit-ibm-runtime==0.41.1
+qiskit
+qiskit-aer
+qiskit-algorithms
+qiskit-nature
+qiskit-ibm-runtime
 
 # Cálculo numérico e científico
-numpy==2.3.2
-scipy==1.16.1
+numpy
+scipy
 
 # Visualização
-matplotlib==3.10.0
-pylatexenc==2.10 # Renderizar LaTex
+matplotlib
+pylatexenc
 
-# Execuçjo
-jupyter==1.1.1
+# Persistência de dados
+pandas
+
+# Execução
+jupyter
 
 # Credenciais
-python-dotenv==1.1.1
+python-dotenv
