@@ -31,3 +31,4 @@ notebooks/*.ipynb_checkpoints*
 
 # Notes for Obsidian
 notes/.obsidian
+.DS_Store
