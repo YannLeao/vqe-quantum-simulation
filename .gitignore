@@ -1,7 +1,5 @@
 # Arquivos específicos do Jupyter/Colab
 .ipynb_checkpoints/
-*.ipynb_checkpoints*
-**.ipynb_checkpoints*
 __pycache__/
 
 # Arquivos temporários/outputs
@@ -14,6 +12,7 @@ data/raw/
 data/external/
 outputs/
 models/
+notebooks/experiments/
 
 # Configurações de IDE (PyCharm/VSCode)
 .idea/
@@ -30,5 +29,5 @@ notebooks/*.ipynb_checkpoints*
 .env
 
 # Notes for Obsidian
-notes/.obsidian
+notes/
 .DS_Store
