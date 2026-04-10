@@ -1,2 +1,0 @@
-molecule,vqe_energy,fci_energy,absolute_error,iterations
-LiH,-7.957555711769763,-8.874531649358461,0.9169759375886981,200
