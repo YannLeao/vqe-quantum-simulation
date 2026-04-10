@@ -6,10 +6,19 @@ The project explores the use of Variational Quantum Eigensolver (VQE) algorithms
 
 ## Repository Structure
 
-- `src/` – implementation of quantum simulation routines
-- `notebooks/` – experimental runs and exploratory simulations
-- `data/` – numerical results (CSV files with energy convergence and related metrics)
-- `figures/` – plots and figures used in project reports
+- `src/` – core implementation (VQE, FCI, utilities)
+- `data/` – cached numerical results (e.g., FCI data)
+- `outputs/` – generated results (plots, figures, logs)
+- `notebooks/` – structured and reproducible analyses
+
+## Setup
+
+This project uses Conda for environment management due to scientific dependencies (e.g., PySCF).
+
+```bash
+conda env create -f environment.yml
+conda activate quantum
+```
 
 ## Research Reports
 
@@ -17,8 +26,3 @@ Project reports and documentation are maintained in separate repositories:
 
 - Partial Report: *([link to report](https://github.com/YannLeao/vqe-research-report/blob/main/partial/report.pdf))*
 - Final Report: *(to be added)*
-
-## Notes
-
-This repository focuses primarily on experimental code and numerical exploration.  
-Research notes and theoretical discussions are maintained separately.
