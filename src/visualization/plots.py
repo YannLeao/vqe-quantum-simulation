@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 from matplotlib import pyplot as plt
 
 
@@ -39,3 +40,19 @@ def plot_error(
 
     plt.tight_layout()
     plt.show()
+
+def plot_fci(molecule:str, basis:str, show: bool = True):
+
+    basis = basis.lower()
+    path = f"../data/{molecule}/{basis}/fci.csv"
+
+    df = pd.read_csv(path)
+
+    plt.plot(df["distance"], df["fci_energy"], label=basis.upper())
+    plt.xlabel("Distance (Å)")
+    plt.ylabel("Energy (Hartree)")
+    plt.title(f"{molecule} FCI Energy Curve")
+
+    if show:
+        plt.legend()
+        plt.show()
