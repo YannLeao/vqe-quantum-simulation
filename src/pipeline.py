@@ -47,11 +47,8 @@ def run_experiment(config: dict, initial_point=None):
 
     return {
         "energy": total_energy,
-        "fci": data["fci_energy"],
-        "error": abs(total_energy - data["fci_energy"]),
         "iterations": result["iterations"],
         "optimal_params": result["optimal_params"],
         "config": config.copy(),
-        "timings": timings,
-        "ansatz_circuit": ansatz
+        "timings": timings
     }
