@@ -1,6 +1,12 @@
+import json
+from pathlib import Path
+from typing import Optional
+
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
+
+from src.utils.paths import get_project_root
 
 
 def plot_error(
@@ -41,18 +47,44 @@ def plot_error(
     plt.tight_layout()
     plt.show()
 
-def plot_fci(molecule:str, basis:str, show: bool = True):
+def plot_fci(
+        molecule:str,
+        basis:str,
+        data_dir: Optional[Path] = None,
+        normalize=False,
+        show: bool = True
+):
 
-    basis = basis.lower()
-    path = f"../data/{molecule}/{basis}/fci.csv"
+    if data_dir is None:
+        data_dir = get_project_root() / "data"
 
-    df = pd.read_csv(path)
+    path = data_dir / molecule / basis
 
-    plt.plot(df["distance"], df["fci_energy"], label=basis.upper())
+    files = list(path.glob("fci_*.csv"))
+
+    if not files:
+        raise FileNotFoundError(f"No FCI data found for {molecule} ({basis})")
+
+    plt.figure()
+
+    for file in files:
+        df = pd.read_csv(file)
+        df = df.sort_values("distance")
+        method = df["method"].iloc[0]
+
+        if normalize:
+            r_eq = df.loc[df["energy"].idxmin(), "distance"]
+            df["distance"] /= r_eq
+            df["energy"] -= df["energy"].min()
+
+        label = f"{basis.upper()} | {method}"
+
+        plt.plot(df["distance"], df["energy"], label=label)
+
     plt.xlabel("Distance (Å)")
     plt.ylabel("Energy (Hartree)")
     plt.title(f"{molecule} FCI Energy Curve")
+    plt.legend()
 
     if show:
-        plt.legend()
         plt.show()
