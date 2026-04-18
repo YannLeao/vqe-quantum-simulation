@@ -10,7 +10,7 @@ def generate_distance_grid(
         basis: str = "sto-3g",
         active_space: Optional[Tuple[int, int]] = None,
         homo_lumo_window: int = 2,
-        freeze_core: bool = True,
+        freeze_core: int = 0,
         coarse_range: Tuple[float, float] = (0.5, 5.0),
         coarse_points: int = 25,
         fine_range_factor: Tuple[float, float] = (0.5, 3.0),
@@ -55,7 +55,7 @@ def generate_distance_grid(
     energies = np.array(energies, dtype=float)
 
     # --- Step 2: find equilibrium ---
-    valid_mask = valid_mask = (~np.isnan(energies)) & (energies < 0)
+    valid_mask = (~np.isnan(energies)) & (energies < 0)
 
     if not np.any(valid_mask):
         raise RuntimeError("All coarse scan points failed.")

@@ -20,7 +20,7 @@ def cache_fci(
         homo_lumo_window: int = 2,
         freeze_core: int = 0,
         data_dir: Optional[Path] = None,
-        overwrite: bool = True,
+        overwrite: bool = False,
         verbose: bool = True,
 ):
     # --- Setup paths ---

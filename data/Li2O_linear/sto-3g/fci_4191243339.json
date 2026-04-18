@@ -1,0 +1,10 @@
+{
+    "molecule": "Li2O_linear",
+    "basis": "sto-3g",
+    "active_space": [
+        8,
+        6
+    ],
+    "homo_lumo_window": 2,
+    "freeze_core": 3
+}

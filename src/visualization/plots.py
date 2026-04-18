@@ -70,14 +70,29 @@ def plot_fci(
     for file in files:
         df = pd.read_csv(file)
         df = df.sort_values("distance")
-        method = df["method"].iloc[0]
 
         if normalize:
             r_eq = df.loc[df["energy"].idxmin(), "distance"]
             df["distance"] /= r_eq
             df["energy"] -= df["energy"].min()
 
+        method = df["method"].iloc[0]
         label = f"{basis.upper()} | {method}"
+
+        meta_file = file.with_suffix(".json")
+
+        if meta_file.exists():
+            with open(meta_file, "r") as f:
+                meta = json.load(f)
+
+            active_space = meta.get("active_space")
+            freeze_core = meta.get("freeze_core")
+
+            if active_space:
+                label += f"({active_space[0]}, {active_space[1]})"
+
+            if freeze_core:
+                label += f" | FC"
 
         plt.plot(df["distance"], df["energy"], label=label)
 
