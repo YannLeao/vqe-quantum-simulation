@@ -1,9 +1,9 @@
 from typing import Optional
 
 from qiskit.circuit import QuantumCircuit
-from qiskit.circuit.library import EfficientSU2
+from qiskit.circuit.library import EfficientSU2, RealAmplitudes, ExcitationPreserving
 
-from qiskit_nature.second_q.circuit.library import UCCSD
+from qiskit_nature.second_q.circuit.library import UCCSD, PUCCSD
 from qiskit_nature.second_q.mappers import JordanWignerMapper
 from qiskit_nature.second_q.circuit.library import HartreeFock
 
@@ -17,21 +17,12 @@ def build_ansatz(
 ) -> QuantumCircuit:
 
     name = name.lower()
+    mapper = JordanWignerMapper()
 
-    # 1. Hardware-efficient
-    if name == "efficient_su2":
-        return EfficientSU2(
-            num_qubits=num_qubits,
-            reps=reps,
-            entanglement="linear"
-        )
-    # 2. Physically-Inspired Ansatz
-    elif name == "uccsd":
-
+    #  --- Physically-Inspired ---
+    if name in ["uccsd", "puccsd"]:
         if num_particles is None or num_spatial_orbitals is None:
-            raise ValueError("UCCSD requires num_particles and num_spatial_orbitals")
-
-        mapper = JordanWignerMapper()
+            raise ValueError(f"The {name} ansatz requires num_particles and num_spatial_orbitals")
 
         initial_state = HartreeFock(
             num_spatial_orbitals=num_spatial_orbitals,
@@ -39,13 +30,29 @@ def build_ansatz(
             qubit_mapper=mapper,
         )
 
-        ansatz = UCCSD(
-            num_spatial_orbitals=num_spatial_orbitals,
-            num_particles=num_particles,
-            qubit_mapper=mapper,
-            initial_state=initial_state,
-        )
+        if name == "uccsd":
+            return UCCSD(
+                num_spatial_orbitals=num_spatial_orbitals,
+                num_particles=num_particles,
+                qubit_mapper=mapper,
+                initial_state=initial_state,
+            )
+        elif name == "puccsd":
+            return PUCCSD(
+                num_spatial_orbitals=num_spatial_orbitals,
+                num_particles=num_particles,
+                qubit_mapper=mapper,
+                initial_state=initial_state,
+            )
 
-        return ansatz
+    # --- Hardware-efficient ---
+    elif name == "efficient_su2":
+        return EfficientSU2(num_qubits, reps=reps, entanglement="linear")
+    elif name == "real_amplitudes":
+        return RealAmplitudes(num_qubits, reps=reps, entanglement="linear")
+    elif name == "excitation_preserving":
+        return ExcitationPreserving(num_qubits, reps=reps, entanglement="linear")
+
+
     else:
         raise ValueError(f"Unknown ansatz: {name}")

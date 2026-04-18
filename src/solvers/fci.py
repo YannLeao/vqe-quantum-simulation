@@ -20,7 +20,7 @@ def compute_fci_energy(
         Molecular geometry (PySCF format)
     basis : str
         Basis set
-    active_space : (n_orbitals, n_electrons) or None
+    active_space : (n_electrons, n_orbitals) or None
         Manual CAS definition
     homo_lumo_window : int
         Number of orbitals around HOMO/LUMO if CAS is automatic
@@ -42,35 +42,22 @@ def compute_fci_energy(
     molecule.build()
 
     # --- Mean-field (Hartree-Fock) ---
-    mean_field = scf.UHF(molecule)
+    mean_field = scf.RHF(molecule)
     mean_field.kernel()
 
     total_electrons = molecule.nelectron
     n_occupied_orbitals = total_electrons // 2
     n_orbitals = molecule.nao_nr()
 
-    method = None
-    active_space_used = None
-    source = None
-
     # --- CASE 1: full FCI (small systems only) ---
     if active_space is None and n_orbitals <= 10:
         ci_solver = fci.FCI(mean_field)
         energy, _ = ci_solver.kernel()
-
-        method = "FCI"
-        active_space_used = None
-        source = None
-
         return energy
 
     # --- CASE 2: define active space ---
     if active_space is not None:
-        n_active_orbitals, n_active_electrons = active_space
-
-        method = "CASCI"
-        active_space_used = active_space
-        source = "manual"
+        n_active_electrons, n_active_orbitals = active_space
 
     else:
         # Automatic HOMO-LUMO selection
@@ -85,10 +72,6 @@ def compute_fci_energy(
 
         n_active_orbitals = len(active_indices)
         n_active_electrons = min(total_electrons, n_active_orbitals)
-
-        method = "CASCI"
-        active_space_used = (n_active_orbitals, n_active_electrons)
-        source = "auto"
 
     # --- CASCI ---
     active_space_solver = mcscf.CASCI(
