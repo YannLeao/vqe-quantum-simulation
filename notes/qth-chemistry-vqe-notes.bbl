@@ -1,0 +1,15 @@
+\providecommand{\href}[2]{#2}\begingroup\raggedright\begin{thebibliography}{1}
+
+\bibitem{aspuru-guzikSimulatedQuantumComputation2005}
+A.~Aspuru-Guzik, A.~D. Dutoi, P.~J. Love, and M.~Head-Gordon, {\it Simulated {{Quantum Computation}} of {{Molecular Energies}}},  {\em Science} {\bf 309} (2005), no.~5741 1704--1707.
+
+\bibitem{peruzzoVariationalEigenvalueSolver2014}
+A.~Peruzzo, J.~McClean, P.~Shadbolt, M.-H. Yung, X.-Q. Zhou, P.~J. Love, A.~Aspuru-Guzik, and J.~L. O’Brien, {\it A variational eigenvalue solver on a photonic quantum processor}, .
+
+\bibitem{mccleanTheoryVariationalHybrid2016}
+J.~R. McClean, J.~Romero, R.~Babbush, and A.~{Aspuru-Guzik}, {\it The theory of variational hybrid quantum-classical algorithms},  {\em New Journal of Physics} {\bf 18} (2016), no.~2 023023.
+
+\bibitem{cerezoVariationalQuantumAlgorithms2021}
+M.~Cerezo, A.~Arrasmith, R.~Babbush, S.~C. Benjamin, S.~Endo, K.~Fujii, J.~R. McClean, K.~Mitarai, X.~Yuan, L.~Cincio, and P.~J. Coles, {\it Variational quantum algorithms},  {\em Nature Reviews Physics} {\bf 3} (2021), no.~9 625--644.
+
+\end{thebibliography}\endgroup

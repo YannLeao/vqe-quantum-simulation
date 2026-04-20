@@ -1,0 +1,34 @@
+\documentclass[12pt]{article}
+
+\usepackage{jheppub}
+\usepackage{iip-arxiv}
+\toccontinuoustrue % Não quebra a página título
+\compress % Comprime o resumo e sumário para caber em uma página
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{braket}
+\usepackage{xcolor}
+
+\title{Notes on VQE for Quantum Chemistry}
+\author[a]{Fábio Novaes}
+\affiliation[a]{Federal Rural University of Pernambuco}
+\emailAdd{fabio.nsantos@gmail.com}
+\date{\today}
+\abstract{}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+
+Classical computational chemistry methods, such as Hartree-Fock and Density Functional Theory, often struggle to accurately describe strongly correlated systems. The Variational Quantum Eigensolver (VQE) is a promising quantum algorithm that can potentially overcome these limitations by leveraging the power of quantum computers to find the ground state energy of molecular systems. In this set of notes, we will explore the VQE algorithm in the context of quantum chemistry, discussing its implementation, challenges, and potential applications.
+
+One of the first papers to suggest the use of quantum computers for quantum chemistry was by Aspuru-Guzik et al.~in 2005~\cite{aspuru-guzikSimulatedQuantumComputation2005}. They proposed using a quantum computer to simulate the electronic structure of molecules, which is a fundamental problem in chemistry. The VQE algorithm was later developed as a hybrid quantum-classical approach to find the ground state energy of molecular systems efficiently \cite{peruzzoVariationalEigenvalueSolver2014,mccleanTheoryVariationalHybrid2016}. A review of the VQE algorithm and its applications in quantum chemistry can be found in~\cite{cerezoVariationalQuantumAlgorithms2021}. 
+
+
+
+\bibliographystyle{JHEP}
+\bibliography{qth-chemistry-vqe}
+
+\end{document}

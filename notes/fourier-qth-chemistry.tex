@@ -1,0 +1,304 @@
+\documentclass[11pt]{article}
+
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{geometry}
+\geometry{margin=1in}
+
+\title{Representation Entropy as a Unifying Framework for\\
+Classical and Quantum Efficiency in Molecular Simulation}
+
+\author{Fábio Novaes\footnote{Federal Rural University of Pernambuco, fabio.nsantos@gmail.com}}
+
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+% TODO:
+% - 3–5 frases
+% - Problema: vantagem quântica em química é incerta
+% - Ideia: entropia de representação (Fourier + Pauli)
+% - Resultado: diagrama de fases
+% - Validação: experimentos simples (H2, LiH)
+\end{abstract}
+
+% ============================================================
+\section{Introduction}
+
+% TODO:
+% - Motivação: química quântica como alvo de quantum advantage
+% - Evidências conflitantes:
+%   - Chan et al.: sem vantagem exponencial
+%   - Experimentos recentes: sucesso híbrido
+% - Problema: falta de critério unificado
+
+% TODO:
+% - Contribuição do paper:
+%   - Definir entropia de representação
+%   - Unificar Fourier e Pauli
+%   - Explicar VQE, métodos clássicos e híbridos
+%   - Propor phase diagram
+
+% TODO:
+% - Contributions (bullet points):
+%   1. Definição formal de H_rep
+%   2. Relação com trainability e simulabilidade
+%   3. Phase diagram
+%   4. Validação numérica
+
+% ============================================================
+\section{Background}
+
+\subsection{Variational Quantum Algorithms}
+
+% TODO:
+% - Definir VQE
+\begin{equation}
+E(\theta) = \langle \psi(\theta) | H | \psi(\theta) \rangle
+\end{equation}
+
+% TODO:
+% - Problemas:
+%   - barren plateaus
+%   - custo de medição
+
+\subsection{Classical Methods}
+
+% TODO:
+% - CC, DMRG, HCI
+% - Ideia central: compressibilidade
+
+\subsection{Recent Results}
+
+% TODO:
+% - Nemkov (Fourier)
+% - Okumura (barren plateau = Fourier)
+% - Angrisani (Pauli truncation)
+% - Chan (no exponential advantage)
+% - Quantum-centric experiment
+
+% ============================================================
+\section{Fourier and Pauli Representations}
+
+\subsection{Fourier Expansion}
+
+\begin{equation}
+E(\theta) = \sum_{k} c_k e^{i k \cdot \theta}
+\end{equation}
+
+% TODO:
+% - explicar origem (geradores do circuito)
+% - discutir sparsidade
+
+\subsection{Pauli Expansion}
+
+\begin{equation}
+U^\dagger O U = \sum_{\gamma} \Phi_\gamma P_\gamma
+\end{equation}
+
+% TODO:
+% - explicar Heisenberg picture
+% - conectar com Angrisani
+
+\subsection{Relation Between Representations}
+
+% TODO:
+% - mostrar que c_k = combinação linear de Phi_gamma
+% - discutir mudança de base
+
+% ============================================================
+\section{Representation Entropy}
+
+\subsection{Fourier Entropy}
+
+\begin{equation}
+p(k) = \frac{|c_k|^2}{\sum_{k'} |c_{k'}|^2}
+\end{equation}
+
+\begin{equation}
+H_F = -\sum_k p(k)\log p(k)
+\end{equation}
+
+% TODO:
+% - interpretação: complexidade espectral
+
+\subsection{Pauli Entropy}
+
+\begin{equation}
+p(\gamma) = \frac{|\Phi_\gamma|^2}{\sum_{\gamma'} |\Phi_{\gamma'}|^2}
+\end{equation}
+
+\begin{equation}
+H_P = -\sum_\gamma p(\gamma)\log p(\gamma)
+\end{equation}
+
+% TODO:
+% - interpretação: spreading do operador
+
+\subsection{Unified Representation Entropy}
+
+% TODO:
+% - discutir equivalência aproximada
+% - definir H_rep
+
+% ============================================================
+\section{Phase Diagram of Variational Quantum Algorithms}
+
+\subsection{Axes of the Diagram}
+
+% TODO:
+% - eixo x: H_F (trainability)
+% - eixo y: H_P (simulabilidade)
+
+\subsection{Regimes}
+
+\paragraph{Region I: Classically Tractable}
+% TODO:
+% H_F baixo, H_P baixo
+
+\paragraph{Region II: Variationally Useful}
+% TODO:
+% H_F moderado, H_P moderado
+
+\paragraph{Region III: Barren Plateau}
+% TODO:
+% H_F máximo
+
+\paragraph{Region IV: Potential Quantum Advantage}
+% TODO:
+% H_P alto, H_F moderado
+
+\paragraph{Region V: Intractable}
+% TODO:
+% ambos altos
+
+\subsection{Scaling Relations}
+
+\begin{equation}
+T \sim e^{-H_F}
+\end{equation}
+
+\begin{equation}
+C \sim e^{-H_P}
+\end{equation}
+
+% TODO:
+% interpretar essas relações
+
+% ============================================================
+\section{Connection to Existing Results}
+
+\subsection{Barren Plateaus}
+
+% TODO:
+% usar Okumura:
+\begin{equation}
+\sum_k |c_k|^2 \sim 2^{-n}
+\end{equation}
+
+% TODO:
+% mostrar H_F máximo
+
+\subsection{Classical Simulability}
+
+% TODO:
+% Chan + Angrisani
+% H_P baixo → truncável
+
+\subsection{Hybrid Quantum Methods}
+
+% TODO:
+% quantum-centric experiment
+% subspace ≈ suporte espectral
+
+% ============================================================
+\section{Numerical Experiments}
+
+\subsection{Setup}
+
+% TODO:
+% - sistemas: H2, LiH
+% - método: Qiskit + PySCF
+% - ansatz: UCC / hardware-efficient
+
+\subsection{Estimating Fourier Coefficients}
+
+% TODO:
+% - amostrar E(theta)
+% - ajustar série de Fourier
+
+\subsection{Estimating Representation Entropy}
+
+% TODO:
+% - calcular H_F
+% - estimar H_P (truncado)
+
+\subsection{Results}
+
+% TODO:
+% - plot H_F vs distância
+% - plot erro VQE vs H_F
+% - discutir correlação
+
+% \begin{figure}
+% \centering
+% \includegraphics[width=0.6\textwidth]{phase_diagram.png}
+% \caption{Phase diagram of VQAs in the $(H_F, H_P)$ plane.}
+% \end{figure}
+
+% ============================================================
+\section{Discussion}
+
+% TODO:
+% - interpretação física
+% - por que química é compressível
+% - implicações para design de ansatz
+
+% TODO:
+% - limitações:
+%   - cálculo de entropia
+%   - sistemas pequenos
+
+% TODO:
+% - implicações:
+%   - critério de vantagem quântica
+
+% ============================================================
+\section{Conclusion}
+
+% TODO:
+% - resumo dos resultados
+% - frase forte:
+%   complexidade = entropia de representação
+
+% TODO:
+% - perspectivas futuras:
+%   - dinâmica
+%   - novos ansatz
+%   - sistemas fortemente correlacionados
+
+% ============================================================
+\appendix
+
+\section{Derivations}
+
+% TODO:
+% - Fourier ↔ Pauli
+% - detalhes matemáticos
+
+\section{Additional Data}
+
+% TODO:
+% - figuras extras
+% - tabelas
+
+% ============================================================
+
+% \bibliographystyle{plain}
+% \bibliography{refs}
+
+\end{document}

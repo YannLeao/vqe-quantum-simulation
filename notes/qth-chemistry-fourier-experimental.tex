@@ -1,0 +1,189 @@
+\documentclass[12pt]{article}
+
+\usepackage{jheppub}
+\usepackage{iip-arxiv}
+\toccontinuoustrue % Não quebra a página título
+\compress % Comprime o resumo e sumário para caber em uma página
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{braket}
+\usepackage{xcolor}
+
+% \title{Fourier Analysis of VQE in Quantum Chemistry: An Experimental Approach}
+\title{On the Fourier Structure of Energy Landscapes in Variational Quantum Algorithms for Molecular Systems}
+
+\author[a]{Yann K. J. Leão}
+\affiliation[a,b]{Federal Rural University of Pernambuco}
+\emailAdd{yann.kjleao@ufrpe.br}
+\author[b]{and Fábio Novaes}
+\emailAdd{fabio.novaes@ufrpe.br}
+
+
+\date{\today}
+\abstract{}
+
+\begin{document}
+\maketitle
+
+% ============================================================
+\section{Introduction}
+
+% TODO:
+% - Contexto: VQE para química
+% - Problema: custo de otimização e medições
+% - Observação: estrutura do landscape pouco explorada
+% - Ideia do paper: analisar via Fourier
+% - Contribuições (bullet points curtos)
+
+% ============================================================
+
+Quantum chemistry is a field that has seen significant advancements with the development of variational quantum algorithms, particularly the Variational Quantum Eigensolver (VQE). The VQE algorithm is designed to find the ground state energy of a molecular system by minimizing an objective function that depends on the parameters of a quantum circuit. This approach combines classical optimization techniques with quantum computing capabilities to solve complex problems in chemistry. However, the performance of VQE can be influenced by various factors, including the choice of ansatz, the optimization landscape, and the presence of noise in quantum hardware. To better understand these factors, we can apply Fourier analysis to the VQE objective function, which allows us to decompose it into its frequency components. This decomposition can provide insights into the structure of the optimization landscape and help identify potential challenges in finding the global minimum. In this experimental approach, we will explore the Fourier analysis of VQE in the context of quantum chemistry, using numerical simulations to illustrate the concepts and techniques involved.
+
+Fourier analysis has been tied to Quantum Machine Learning in the past, as in~\cite{schuld2019}, where the authors show that quantum models can be expressed as Fourier series. In this work, we will apply similar techniques to analyze the VQE objective function, which is a crucial component of the algorithm. By understanding the frequency components of the objective function, we can gain insights into the optimization process and potentially improve the performance of VQE in quantum chemistry applications.
+
+\section{Objectives}
+
+The main objectives of this study are:
+\begin{itemize}
+    \item To apply Fourier analysis to the VQE objective function in quantum chemistry.
+    \item To investigate the impact of different ansatz choices on the frequency components of the objective function.
+    \item To analyze the optimization landscape of VQE and identify potential challenges in finding the global minimum.
+    \item To explore the effects of noise on the Fourier components and the optimization process.
+\end{itemize}
+
+
+
+
+\section{Background}
+
+\subsection{Variational Quantum Algorithms}
+
+\begin{equation}
+E(\theta) = \langle \psi(\theta) | H | \psi(\theta) \rangle
+\end{equation}
+
+% TODO:
+% - explicar VQE rapidamente
+% - mencionar Hamiltoniano em Pauli (sem detalhes excessivos)
+
+\subsection{Fourier Representation}
+
+\begin{equation}
+E(\theta) = \sum_k c_k e^{ik\theta}
+\end{equation}
+
+% TODO:
+% - ideia intuitiva: função periódica
+% - não entrar em teoria profunda
+
+% ============================================================
+\section{Analytical Example: H$_2$}
+
+% TODO:
+% - escrever forma do Hamiltoniano (breve)
+% - mostrar resultado final:
+
+\begin{equation}
+E(\theta) = a + b\cos(\theta) + c\sin(\theta)
+\end{equation}
+
+% TODO:
+% - explicar que poucos termos aparecem
+% - destacar sparsidade espectral
+
+% ============================================================
+\section{Methodology}
+
+% TODO:
+% - PySCF para Hamiltoniano
+% - Qiskit para VQE
+% - Ansatz utilizado (UCC ou EfficientSU2)
+
+\subsection{Parameter Scan}
+
+% TODO:
+% - fixar todos parâmetros menos 1
+% - varrer θ em [0, 2π]
+
+\subsection{Fourier Extraction}
+
+% TODO:
+% - FFT ou regressão
+% - obter coeficientes c_k
+
+\subsection{Spectral Metric}
+
+\begin{equation}
+p_k = \frac{|c_k|^2}{\sum_j |c_j|^2}
+\end{equation}
+
+\begin{equation}
+H = -\sum_k p_k \log p_k
+\end{equation}
+
+% TODO:
+% - dizer que é uma métrica simples de dispersão
+
+% ============================================================
+\section{Results}
+
+\subsection{H$_2$}
+
+% TODO:
+% - plot E(θ)
+% - plot reconstrução Fourier
+% - comentar poucos coeficientes
+
+\subsection{LiH}
+
+% TODO:
+% - mesmo procedimento
+% - destacar diferença de escala
+
+\subsection{Spectral Analysis}
+
+% TODO:
+% - gráfico dos coeficientes
+% - mostrar dominância de poucos modos
+
+% \begin{figure}
+% \centering
+% \includegraphics[width=0.6\textwidth]{spectrum.png}
+% \caption{Fourier spectrum of the energy landscape.}
+% \end{figure}
+
+% ============================================================
+\section{Discussion}
+
+% TODO:
+% - interpretar sparsity
+% - ligação com compressão de funções
+% - conexão leve com IA:
+%   - aprendizado
+%   - modelos reduzidos
+
+% TODO:
+% - evitar teoria pesada aqui
+
+% ============================================================
+\section{Conclusion}
+
+% TODO:
+% - resumo dos achados
+% - frase forte:
+%   energy landscapes são dominados por baixas frequências
+
+% TODO:
+% - trabalho futuro:
+%   - mais parâmetros
+%   - outros sistemas
+%   - integração com ML
+
+% ============================================================
+
+
+\bibliographystyle{JHEP}
+\bibliography{qth-chemistry-vqe}
+
+\end{document}

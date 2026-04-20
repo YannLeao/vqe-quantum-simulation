@@ -29,5 +29,5 @@ notebooks/*.ipynb_checkpoints*
 .env
 
 # Notes for Obsidian
-notes/
+# notes/
 .DS_Store

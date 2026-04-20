@@ -1,0 +1,46 @@
+This is BibTeX, Version 0.99d (TeX Live 2025)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: qth-chemistry-vqe-notes.aux
+The style file: JHEP.bst
+Database file #1: qth-chemistry-vqe.bib
+You've used 4 entries,
+            2195 wiz_defined-function locations,
+            543 strings with 4715 characters,
+and the built_in function-call counts, 1483 in all, are:
+= -- 132
+> -- 89
+< -- 0
++ -- 31
+- -- 27
+* -- 119
+:= -- 231
+add.period$ -- 4
+call.type$ -- 4
+change.case$ -- 4
+chr.to.int$ -- 0
+cite$ -- 4
+duplicate$ -- 68
+empty$ -- 113
+format.name$ -- 27
+if$ -- 353
+int.to.chr$ -- 0
+int.to.str$ -- 4
+missing$ -- 15
+newline$ -- 15
+num.names$ -- 4
+pop$ -- 13
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 0
+skip$ -- 51
+stack$ -- 0
+substring$ -- 84
+swap$ -- 33
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 0
+while$ -- 11
+width$ -- 5
+write$ -- 41
