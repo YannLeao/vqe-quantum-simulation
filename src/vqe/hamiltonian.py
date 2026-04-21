@@ -2,7 +2,7 @@ from typing import Dict, Optional, Tuple, cast
 
 from qiskit.quantum_info import SparsePauliOp
 from qiskit_nature.second_q.drivers import PySCFDriver
-from qiskit_nature.second_q.mappers import JordanWignerMapper
+from qiskit_nature.second_q.mappers import JordanWignerMapper, ParityMapper
 from qiskit_nature.second_q.operators import FermionicOp
 from qiskit_nature.second_q.problems import ElectronicStructureProblem
 from qiskit_nature.second_q.transformers import FreezeCoreTransformer, ActiveSpaceTransformer
@@ -50,17 +50,61 @@ def build_electronic_hamiltonian(
 
     return fermionic_op, constant_energy
 
+
+def build_electronic_problem(
+        atom_string: str,
+        basis: str = "sto-3g",
+        active_space: Optional[Tuple[int, int]] = None,
+        homo_lumo_window: int = 2,
+        freeze_core: bool = True,
+) -> ElectronicStructureProblem:
+
+    try:
+        driver = PySCFDriver(atom=atom_string, basis=basis, initial_guess="hcore")
+    except TypeError:
+        driver = PySCFDriver(atom=atom_string, basis=basis)
+    problem = driver.run()
+
+    if active_space:
+        n_active_electrons, n_active_orbitals = active_space
+    else:
+        n_active_orbitals = homo_lumo_window * 2
+        n_active_electrons = n_active_orbitals
+
+    transformer = ActiveSpaceTransformer(
+        num_electrons=n_active_electrons,
+        num_spatial_orbitals=n_active_orbitals,
+        active_orbitals=None,
+    )
+
+    if freeze_core:
+        core_transformer = FreezeCoreTransformer()
+        problem = core_transformer.transform(problem)
+
+    return cast(ElectronicStructureProblem, transformer.transform(problem))
+
 def build_qubit_hamiltonian(
         electronic_hamiltonian: FermionicOp,
-        mapper: str = "jw"
+        mapper: str = "jw",
+        z2symmetry_reduction: bool = False,
+        problem: Optional[ElectronicStructureProblem] = None,
+        num_particles: Optional[Tuple[int, int]] = None,
 ) -> SparsePauliOp:
 
     if mapper == "jw":
         mapper_obj = JordanWignerMapper()
+    elif mapper == "parity":
+        mapper_obj = ParityMapper(num_particles=num_particles)
     else:
         raise ValueError(f"Mapper {mapper} not supported")
 
-    qubit_op = mapper_obj.map(electronic_hamiltonian)
+    if z2symmetry_reduction:
+        if problem is None:
+            raise ValueError("problem is required when z2symmetry_reduction=True")
+        tapered_mapper = problem.get_tapered_mapper(mapper_obj)
+        qubit_op = tapered_mapper.map(electronic_hamiltonian)
+    else:
+        qubit_op = mapper_obj.map(electronic_hamiltonian)
 
     return qubit_op
 
