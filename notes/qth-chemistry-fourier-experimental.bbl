@@ -1,3 +1,6 @@
-\providecommand{\href}[2]{#2}\begingroup\raggedright\begin{thebibliography}{}
+\providecommand{\href}[2]{#2}\begingroup\raggedright\begin{thebibliography}{1}
+
+\bibitem{schuldEffectDataEncoding2021}
+M.~Schuld, R.~Sweke, and J.~J. Meyer, {\it The effect of data encoding on the expressive power of variational quantum machine learning models},  \href{http://arxiv.org/abs/2008.08605}{{\tt arXiv:2008.08605}}.
 
 \end{thebibliography}\endgroup

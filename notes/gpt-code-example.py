@@ -1,17 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from qiskit_algorithms import VQE
-from qiskit_algorithms.optimizers import COBYLA
-from qiskit.primitives import Estimator
+from qiskit.primitives import StatevectorEstimator
 
 from qiskit_nature.second_q.drivers import PySCFDriver
 from qiskit_nature.second_q.mappers import ParityMapper
-from qiskit_nature.second_q.problems import ElectronicStructureProblem
-from qiskit_nature.second_q.transformers import ActiveSpaceTransformer
-from qiskit_nature.second_q.circuit.library import UCCSD, HartreeFock
-
-from qiskit_nature.second_q.algorithms import GroundStateEigensolver
 
 from qiskit.circuit.library import EfficientSU2
 
@@ -36,10 +29,13 @@ def get_qubit_hamiltonian(atom_string, charge=0, spin=0):
 # ============================================================
 
 def compute_energy(ansatz, hamiltonian, parameters):
-    estimator = Estimator()
-    job = estimator.run([ansatz], [hamiltonian], [parameters])
-    result = job.result()
-    return result.values[0]
+    estimator = StatevectorEstimator()
+    # Primitive V2 expects a list of PUBs in the format:
+    # (circuit, observable, parameter_values)
+    pub = (ansatz, hamiltonian, [parameters])
+    job = estimator.run([pub])
+    result = job.result()[0]
+    return float(result.data.evs[0])
 
 
 # ============================================================
@@ -132,8 +128,8 @@ plt.savefig("energy_curves.png")
 
 # Espectro
 plt.figure()
-plt.stem(np.abs(freqs_h2), mag_h2, label="H2", use_line_collection=True)
-plt.stem(np.abs(freqs_lih), mag_lih, linefmt='r-', markerfmt='ro', label="LiH", use_line_collection=True)
+plt.stem(np.abs(freqs_h2), mag_h2, label="H2")
+plt.stem(np.abs(freqs_lih), mag_lih, linefmt='r-', markerfmt='ro', label="LiH")
 plt.xlabel("Frequency")
 plt.ylabel("Magnitude")
 plt.legend()

@@ -1,12 +1,36 @@
 %% This BibTeX bibliography file was created using BibDesk.
 %% https://bibdesk.sourceforge.io/
 
-%% Created for Fabio Novaes at 2026-04-19 19:40:00 -0300 
+%% Created for Fabio Novaes at 2026-04-20 22:11:27 -0300 
 
 
 %% Saved with string encoding Unicode (UTF-8) 
 
 
+
+@article{schuldEffectDataEncoding2021,
+	abstract = {Quantum computers can be used for supervised learning by treating parametrised quantum circuits as models that map data inputs to predictions. While a lot of work has been done to investigate practical implications of this approach, many important theoretical properties of these models remain unknown. Here we investigate how the strategy with which data is encoded into the model influences the expressive power of parametrised quantum circuits as function approximators. We show that one can naturally write a quantum model as a partial Fourier series in the data, where the accessible frequencies are determined by the nature of the data encoding gates in the circuit. By repeating simple data encoding gates multiple times, quantum models can access increasingly rich frequency spectra. We show that there exist quantum models which can realise all possible sets of Fourier coefficients, and therefore, if the accessible frequency spectrum is asymptotically rich enough, such models are universal function approximators.},
+	author = {Schuld, Maria and Sweke, Ryan and Meyer, Johannes Jakob},
+	date = {2021-03-24},
+	date-added = {2026-04-20 22:11:19 -0300},
+	date-modified = {2026-04-20 22:11:19 -0300},
+	doi = {10.1103/PhysRevA.103.032430},
+	eprint = {2008.08605},
+	eprintclass = {quant-ph},
+	eprinttype = {arXiv},
+	file = {/Users/fabio/Library/CloudStorage/GoogleDrive-fabio.nsantos@gmail.com/Meu Drive/Zotero/storage/6IIXR4W7/Schuld et al. - 2021 - The effect of data encoding on the expressive power of variational quantum machine learning models.pdf;/Users/fabio/Library/CloudStorage/GoogleDrive-fabio.nsantos@gmail.com/Meu Drive/Zotero/storage/MXGDTUZ6/2008.html},
+	issn = {2469-9926, 2469-9934},
+	journaltitle = {Physical Review A},
+	keywords = {Quantum Physics,Statistics - Machine Learning},
+	number = {3},
+	pages = {032430},
+	shortjournal = {Phys. Rev. A},
+	title = {The Effect of Data Encoding on the Expressive Power of Variational Quantum Machine Learning Models},
+	url = {http://arxiv.org/abs/2008.08605},
+	urldate = {2026-04-20},
+	volume = {103},
+	bdsk-url-1 = {http://arxiv.org/abs/2008.08605},
+	bdsk-url-2 = {https://doi.org/10.1103/PhysRevA.103.032430}}
 
 @article{aspuru-guzikSimulatedQuantumComputation2005,
 	abstract = {The calculation time for the energy of atoms and molecules scales exponentially with system size on a classical computer but polynomially using quantum algorithms. We demonstrate that such algorithms can be applied to problems of chemical interest using modest numbers of quantum bits. Calculations of the water and lithium hydride molecular ground-state energies have been carried out on a quantum computer simulator using a recursive phase-estimation algorithm. The recursive algorithm reduces the number of quantum bits required for the readout register from about 20 to 4. Mappings of the molecular wave function to the quantum bits are described. An adiabatic method for the preparation of a good approximate ground-state wave function is described and demonstrated for a stretched hydrogen molecule. The number of quantum bits required scales linearly with the number of basis functions, and the number of gates required grows polynomially with the number of quantum bits.},
@@ -247,40 +271,3 @@
 	volume = {109},
 	bdsk-url-1 = {http://arxiv.org/abs/1001.3855},
 	bdsk-url-2 = {https://doi.org/10.1080/00268976.2011.552441}}
-
-@article{mccleanTheoryVariationalHybrid2016,
-  title = {The Theory of Variational Hybrid Quantum-Classical Algorithms},
-  author = {McClean, Jarrod R and Romero, Jonathan and Babbush, Ryan and {Aspuru-Guzik}, Al{\'a}n},
-  year = 2016,
-  journal = {New Journal of Physics},
-  volume = {18},
-  number = {2},
-  pages = {023023},
-  publisher = {IOP Publishing},
-  issn = {1367-2630},
-  doi = {10.1088/1367-2630/18/2/023023},
-  urldate = {2026-04-19},
-  abstract = {Many quantum algorithms have daunting resource requirements when compared to what is available today. To address this discrepancy, a quantum-classical hybrid optimization scheme known as `the quantum variational eigensolver' was developed (Peruzzo et al 2014 Nat. Commun. 5 4213) with the philosophy that even minimal quantum resources could be made useful when used in conjunction with classical routines. In this work we extend the general theory of this algorithm and suggest algorithmic improvements for practical implementations. Specifically, we develop a variational adiabatic ansatz and explore unitary coupled cluster where we establish a connection from second order unitary coupled cluster to universal gate sets through a relaxation of exponential operator splitting. We introduce the concept of quantum variational error suppression that allows some errors to be suppressed naturally in this algorithm on a pre-threshold quantum device. Additionally, we analyze truncation and correlated sampling in Hamiltonian averaging as ways to reduce the cost of this procedure. Finally, we show how the use of modern derivative free optimization techniques can offer dramatic computational savings of up to three orders of magnitude over previously used optimization techniques.},
-  langid = {english},
-  file = {/Users/fabio/Library/CloudStorage/GoogleDrive-fabio.nsantos@gmail.com/Meu Drive/Zotero/storage/CPLUFGLG/McClean et al. - 2016 - The theory of variational hybrid quantum-classical algorithms.pdf}
-}
-
-@article{peruzzoVariationalEigenvalueSolver2014,
-  title = {A Variational Eigenvalue Solver on a Photonic Quantum Processor},
-  author = {Peruzzo, Alberto and McClean, Jarrod and Shadbolt, Peter and Yung, Man-Hong and Zhou, Xiao-Qi and Love, Peter J. and Aspuru-Guzik, Alán and O’Brien, Jeremy L.},
-  date = {2014-07-23},
-  journaltitle = {Nature Communications},
-  shortjournal = {Nat Commun},
-  volume = {5},
-  number = {1},
-  pages = {4213},
-  publisher = {Nature Publishing Group},
-  issn = {2041-1723},
-  doi = {10.1038/ncomms5213},
-  url = {https://www.nature.com/articles/ncomms5213},
-  urldate = {2026-04-19},
-  abstract = {Quantum computers promise to efficiently solve important problems that are intractable on a conventional computer. For quantum systems, where the physical dimension grows exponentially, finding the eigenvalues of certain operators is one such intractable problem and remains a fundamental challenge. The quantum phase estimation algorithm efficiently finds the eigenvalue of a given eigenvector but requires fully coherent evolution. Here we present an alternative approach that greatly reduces the requirements for coherent evolution and combine this method with a new approach to state preparation based on ansätze and classical optimization. We implement the algorithm by combining a highly reconfigurable photonic quantum processor with a conventional computer. We experimentally demonstrate the feasibility of this approach with an example from quantum chemistry—calculating the ground-state molecular energy for He–H+. The proposed approach drastically reduces the coherence time requirements, enhancing the potential of quantum resources available today and in the near future.},
-  langid = {english},
-  keywords = {Applied physics,Quantum chemistry,Quantum optics},
-  file = {/Users/fabio/Library/CloudStorage/GoogleDrive-fabio.nsantos@gmail.com/Meu Drive/Zotero/storage/B8CEZJ9W/Peruzzo et al. - 2014 - A variational eigenvalue solver on a photonic quantum processor.pdf}
-}
