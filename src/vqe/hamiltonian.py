@@ -1,7 +1,7 @@
 from typing import Dict, Optional, Tuple, cast
 
 from qiskit.quantum_info import SparsePauliOp
-from qiskit_nature.second_q.drivers import PySCFDriver, InitialGuess
+from qiskit_nature.second_q.drivers import PySCFDriver
 from qiskit_nature.second_q.mappers import JordanWignerMapper
 from qiskit_nature.second_q.operators import FermionicOp
 from qiskit_nature.second_q.problems import ElectronicStructureProblem
@@ -16,7 +16,12 @@ def build_electronic_hamiltonian(
         freeze_core: bool = True
 ) -> Tuple[FermionicOp, float]:
 
-    driver = PySCFDriver(atom=atom_string, basis=basis, initial_guess=InitialGuess.HCORE)
+    try:
+        # Some qiskit_nature versions expose this keyword.
+        driver = PySCFDriver(atom=atom_string, basis=basis, initial_guess="hcore")
+    except TypeError:
+        # Fallback for versions that do not support initial_guess.
+        driver = PySCFDriver(atom=atom_string, basis=basis)
     problem = driver.run()
 
 
@@ -58,6 +63,45 @@ def build_qubit_hamiltonian(
     qubit_op = mapper_obj.map(electronic_hamiltonian)
 
     return qubit_op
+
+
+def pauli_terms_from_qubit_hamiltonian(
+        qubit_hamiltonian: SparsePauliOp,
+        tolerance: float = 1e-12,
+        real_only: bool = True,
+) -> list[tuple[str, float | complex]]:
+    """Extract Pauli-string terms from a qubit Hamiltonian.
+
+    Parameters
+    ----------
+    qubit_hamiltonian : SparsePauliOp
+        Hamiltonian already mapped to qubit space.
+    tolerance : float
+        Terms with |coef| <= tolerance are dropped.
+    real_only : bool
+        If True, return real coefficients when the imaginary part is negligible.
+
+    Returns
+    -------
+    list[tuple[str, float | complex]]
+        List of (pauli_label, coefficient), e.g. [("II", c0), ("IZ", c1), ...].
+    """
+    simplified = qubit_hamiltonian.simplify(atol=tolerance)
+
+    labels = simplified.paulis.to_labels()
+    coeffs = simplified.coeffs
+
+    terms: list[tuple[str, float | complex]] = []
+    for label, coeff in zip(labels, coeffs):
+        if abs(coeff) <= tolerance:
+            continue
+
+        if real_only and abs(coeff.imag) <= tolerance:
+            terms.append((label, float(coeff.real)))
+        else:
+            terms.append((label, complex(coeff)))
+
+    return terms
 
 
 def extract_problem_metadat(problem: ElectronicStructureProblem) -> Dict[str, Optional[float | int | Tuple[int, int]]]:
