@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Sequence
 
 import numpy as np
 import pandas as pd
@@ -49,57 +49,68 @@ def plot_error(
 
 def plot_fci(
         molecule:str,
-        basis:str,
+    basis:str | Sequence[str],
         data_dir: Optional[Path] = None,
         normalize=False,
+    latest_only: bool = True,
         show: bool = True
 ):
 
     if data_dir is None:
         data_dir = get_project_root() / "data"
 
-    path = data_dir / molecule / basis
-
-    files = list(path.glob("fci_*.csv"))
-
-    if not files:
-        raise FileNotFoundError(f"No FCI data found for {molecule} ({basis})")
+    basis_list = [basis] if isinstance(basis, str) else list(basis)
+    if not basis_list:
+        raise ValueError("basis must contain at least one basis name")
 
     plt.figure()
 
-    for file in files:
-        df = pd.read_csv(file)
-        df = df.sort_values("distance")
+    for basis_name in basis_list:
+        path = data_dir / molecule / basis_name
+        files = sorted(path.glob("fci_*.csv"))
 
-        if normalize:
-            r_eq = df.loc[df["energy"].idxmin(), "distance"]
-            df["distance"] /= r_eq
-            df["energy"] -= df["energy"].min()
+        if not files:
+            raise FileNotFoundError(f"No FCI data found for {molecule} ({basis_name})")
 
-        method = df["method"].iloc[0]
-        label = f"{basis.upper()} | {method}"
+        # Keep one curve per basis by default to avoid repeated legend entries.
+        if latest_only:
+            files = [max(files, key=lambda p: p.stat().st_mtime)]
 
-        meta_file = file.with_suffix(".json")
+        for file in files:
+            df = pd.read_csv(file)
+            df = df.sort_values("distance")
 
-        if meta_file.exists():
-            with open(meta_file, "r") as f:
-                meta = json.load(f)
+            if normalize:
+                r_eq = df.loc[df["energy"].idxmin(), "distance"]
+                df["distance"] /= r_eq
+                df["energy"] -= df["energy"].min()
 
-            active_space = meta.get("active_space")
-            freeze_core = meta.get("freeze_core")
+            method = df["method"].iloc[0]
+            label = f"{basis_name.upper()} | {method}"
 
-            if active_space:
-                label += f"({active_space[0]}, {active_space[1]})"
+            meta_file = file.with_suffix(".json")
 
-            if freeze_core:
-                label += f" | FC"
+            if meta_file.exists():
+                with open(meta_file, "r") as f:
+                    meta = json.load(f)
 
-        plt.plot(df["distance"], df["energy"], label=label)
+                active_space = meta.get("active_space")
+                freeze_core = meta.get("freeze_core")
+
+                if active_space:
+                    label += f"({active_space[0]}, {active_space[1]})"
+
+                if freeze_core:
+                    label += f" | FC"
+
+            plt.plot(df["distance"], df["energy"], label=label)
 
     plt.xlabel("Distance (Å)")
     plt.ylabel("Energy (Hartree)")
     plt.title(f"{molecule} FCI Energy Curve")
-    plt.legend()
+    handles, labels = plt.gca().get_legend_handles_labels()
+    unique = dict(zip(labels, handles))
+    plt.legend(unique.values(), unique.keys())
 
     if show:
         plt.show()

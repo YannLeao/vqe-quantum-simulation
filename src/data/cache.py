@@ -1,4 +1,5 @@
 import csv
+import hashlib
 import json
 import time
 from pathlib import Path
@@ -9,6 +10,27 @@ from pyscf import gto
 
 from src.solvers.fci import compute_fci_energy
 from src.utils.paths import get_project_root
+
+
+def _build_cache_config(
+        molecule: str,
+        basis: str,
+        active_space: Optional[Tuple[int, int]],
+        homo_lumo_window: int,
+        freeze_core: int,
+) -> dict:
+    return {
+        "molecule": molecule,
+        "basis": basis,
+        "active_space": active_space,
+        "homo_lumo_window": homo_lumo_window,
+        "freeze_core": freeze_core,
+    }
+
+
+def _stable_config_hash(config: dict, length: int = 10) -> str:
+    config_str = json.dumps(config, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(config_str.encode("utf-8")).hexdigest()[:length]
 
 
 def cache_fci(
@@ -31,16 +53,14 @@ def cache_fci(
     path.mkdir(parents=True, exist_ok=True)
 
     # -- Experiment signature
-    config = {
-        "molecule": molecule,
-        "basis": basis,
-        "active_space": active_space,
-        "homo_lumo_window": homo_lumo_window,
-        "freeze_core": freeze_core
-    }
-
-    config_str = json.dumps(config, sort_keys=True)
-    config_hash = str(abs(hash(config_str)))[:10]
+    config = _build_cache_config(
+        molecule=molecule,
+        basis=basis,
+        active_space=active_space,
+        homo_lumo_window=homo_lumo_window,
+        freeze_core=freeze_core,
+    )
+    config_hash = _stable_config_hash(config)
 
     file_path = path / f"fci_{config_hash}.csv"
     meta_path = path / f"fci_{config_hash}.json"
@@ -53,7 +73,7 @@ def cache_fci(
             reader = csv.DictReader(f)
             for row in reader:
                 d = float(row["distance"])
-                e = float(row["fci_energy"])
+                e = float(row["energy"])
                 done[d] = e
 
     # --- Save metadata (once) ---
@@ -154,3 +174,91 @@ def cache_fci(
         f.close()
 
     return np.array(results)
+
+
+def deduplicate_fci_cache(
+        data_dir: Optional[Path] = None,
+        dry_run: bool = True,
+        verbose: bool = True,
+) -> dict:
+    """Remove arquivos de cache duplicados, mantendo o mais recente por assinatura de experimento.
+
+    A assinatura é inferida do arquivo .json pareado (molecule, basis, active_space,
+    homo_lumo_window, freeze_core). Arquivos sem metadata válida são preservados.
+    """
+    if data_dir is None:
+        data_dir = get_project_root() / "data"
+
+    kept_csv = []
+    removed_csv = []
+    kept_json = []
+    removed_json = []
+    skipped_csv = []
+
+    grouped = {}
+    for csv_path in data_dir.rglob("fci_*.csv"):
+        json_path = csv_path.with_suffix(".json")
+        if not json_path.exists():
+            skipped_csv.append(str(csv_path))
+            continue
+
+        try:
+            with open(json_path, "r") as f:
+                meta = json.load(f)
+        except Exception:
+            skipped_csv.append(str(csv_path))
+            continue
+
+        try:
+            active_space = meta.get("active_space")
+            if isinstance(active_space, list):
+                active_space = tuple(active_space)
+
+            key_config = _build_cache_config(
+                molecule=meta["molecule"],
+                basis=meta["basis"],
+                active_space=active_space,
+                homo_lumo_window=meta.get("homo_lumo_window", 2),
+                freeze_core=meta.get("freeze_core", 0),
+            )
+            signature = _stable_config_hash(key_config)
+        except Exception:
+            skipped_csv.append(str(csv_path))
+            continue
+
+        grouped.setdefault(signature, []).append((csv_path, json_path))
+
+    for _, items in grouped.items():
+        # Keep newest CSV for each signature.
+        newest_csv, newest_json = max(items, key=lambda pair: pair[0].stat().st_mtime)
+        kept_csv.append(str(newest_csv))
+        kept_json.append(str(newest_json))
+
+        for csv_path, json_path in items:
+            if csv_path == newest_csv:
+                continue
+            removed_csv.append(str(csv_path))
+            removed_json.append(str(json_path))
+
+            if not dry_run:
+                if csv_path.exists():
+                    csv_path.unlink()
+                if json_path.exists():
+                    json_path.unlink()
+
+    summary = {
+        "mode": "dry_run" if dry_run else "apply",
+        "groups": len(grouped),
+        "kept_csv": len(kept_csv),
+        "removed_csv": len(removed_csv),
+        "removed_json": len(removed_json),
+        "skipped_csv": len(skipped_csv),
+        "kept_files": kept_csv,
+        "removed_files": removed_csv,
+        "skipped_files": skipped_csv,
+    }
+
+    if verbose:
+        print(json.dumps(summary, indent=2))
+
+    return summary

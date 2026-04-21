@@ -1,0 +1,7 @@
+{
+    "molecule": "H2",
+    "basis": "cc-pvdz",
+    "active_space": null,
+    "homo_lumo_window": 2,
+    "freeze_core": 0
+}

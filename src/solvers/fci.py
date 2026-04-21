@@ -61,17 +61,24 @@ def compute_fci_energy(
 
     else:
         # Automatic HOMO-LUMO selection
-        mo_energies = mean_field.mo_energy[0]
+        mo_energies = mean_field.mo_energy
 
         sorted_indices = np.argsort(mo_energies)
 
         start = max(0, n_occupied_orbitals - homo_lumo_window)
-        end = n_occupied_orbitals + homo_lumo_window
+        end = min(len(sorted_indices), n_occupied_orbitals + homo_lumo_window)
 
         active_indices = sorted_indices[start:end]
 
         n_active_orbitals = len(active_indices)
-        n_active_electrons = min(total_electrons, n_active_orbitals)
+
+        # Keep frozen-core electrons out of active space and enforce valid parity.
+        n_active_electrons = max(0, total_electrons - 2 * freeze_core)
+        n_active_electrons = min(n_active_electrons, 2 * n_active_orbitals)
+        if n_active_electrons % 2 != 0:
+            n_active_electrons -= 1
+        if n_active_electrons <= 0 or n_active_orbitals <= 0:
+            raise ValueError("Invalid automatic active space selection.")
 
     # --- CASCI ---
     active_space_solver = mcscf.CASCI(
