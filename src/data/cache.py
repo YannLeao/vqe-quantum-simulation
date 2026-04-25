@@ -76,8 +76,13 @@ def cache_fci(
         with open(file_path, "r") as f:
             reader = csv.DictReader(f)
             for row in reader:
-                d = float(row["distance"])
-                e = float(row["energy"])
+                try:
+                    d = float(row["distance"])
+                    e = float(row["energy"])
+                except (TypeError, ValueError, KeyError):
+                    # Ignore malformed rows (e.g., duplicated headers inside CSV)
+                    # to keep cache loading resilient.
+                    continue
                 done[d] = e
 
     # --- Save metadata (once) ---
@@ -88,7 +93,8 @@ def cache_fci(
     # --- Prepare file ---
     write_header = not file_path.exists() or overwrite
 
-    f = open(file_path, "a", newline="")
+    file_mode = "w" if overwrite else "a"
+    f = open(file_path, file_mode, newline="")
     writer = csv.writer(f)
 
     if write_header:

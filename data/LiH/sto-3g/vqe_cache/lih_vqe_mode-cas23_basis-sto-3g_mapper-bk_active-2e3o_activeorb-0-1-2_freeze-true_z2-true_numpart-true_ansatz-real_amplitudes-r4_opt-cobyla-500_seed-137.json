@@ -1,0 +1,28 @@
+{
+  "cache_csv": "/Users/fabio/workspace/projects/PIBIC-FACEPE-2025-yann/pibic-yann-2025/co\u0301digos-yann/vqe-quantum-simulation/data/LiH/sto-3g/vqe_cache/lih_vqe_mode-cas23_basis-sto-3g_mapper-bk_active-2e3o_activeorb-0-1-2_freeze-true_z2-true_numpart-true_ansatz-real_amplitudes-r4_opt-cobyla-500_seed-137.csv",
+  "reference": "cache_fci(active_space=(2,3), freeze_core=1)",
+  "settings": {
+    "basis": "sto-3g",
+    "active_space": [
+      2,
+      3
+    ],
+    "active_orbitals": [
+      0,
+      1,
+      2
+    ],
+    "freeze_core": true,
+    "mapper": "bk",
+    "z2symmetry_reduction": true,
+    "use_num_particles": true,
+    "run_full_fci": true,
+    "casci_ref_overwrite": false,
+    "ansatz_name": "real_amplitudes",
+    "ansatz_reps": 4,
+    "optimizer": "cobyla",
+    "optimizer_max_iter": 500,
+    "seed": 137
+  },
+  "rows_total": 108
+}

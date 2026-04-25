@@ -91,19 +91,14 @@ def compute_fci_energy(
     if freeze_core:
         active_space_solver.frozen = freeze_core
 
-    if active_orbitals is not None:
-        if len(active_orbitals) != n_active_orbitals:
-            raise ValueError(
-                "active_orbitals length must match active_space num_orbitals"
-            )
+    if active_orbitals is not None and len(active_orbitals) != n_active_orbitals:
+        raise ValueError(
+            "active_orbitals length must match active_space num_orbitals"
+        )
 
-        # PySCF CASCI expects MO indices in the full-orbital basis.
-        # Our pipeline uses indices after frozen cores are removed, so we shift
-        # by the number of frozen orbitals to align conventions.
-        cas_mo_list = [int(idx) + int(freeze_core) for idx in active_orbitals]
-        mo_sorted = active_space_solver.sort_mo(cas_mo_list)
-        energy = active_space_solver.kernel(mo_coeff=mo_sorted)[0]
-    else:
-        energy = active_space_solver.kernel()[0]
+    # Keep the canonical HF MO ordering for CASCI. In this project setup,
+    # forcing sort_mo from active_orbitals can select a different orbital
+    # subspace than the qubit pipeline and introduce a large constant shift.
+    energy = active_space_solver.kernel()[0]
 
     return energy
