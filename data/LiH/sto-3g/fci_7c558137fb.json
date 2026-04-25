@@ -1,0 +1,7 @@
+{
+    "molecule": "LiH",
+    "basis": "sto-3g",
+    "active_space": null,
+    "homo_lumo_window": 0,
+    "freeze_core": 0
+}

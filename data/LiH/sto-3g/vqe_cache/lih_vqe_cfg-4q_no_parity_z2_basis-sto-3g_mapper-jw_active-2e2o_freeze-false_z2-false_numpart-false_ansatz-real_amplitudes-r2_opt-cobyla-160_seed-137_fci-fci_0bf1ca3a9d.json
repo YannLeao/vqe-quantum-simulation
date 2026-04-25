@@ -1,0 +1,25 @@
+{
+  "cache_csv": "/Users/fabio/workspace/projects/PIBIC-FACEPE-2025-yann/pibic-yann-2025/co\u0301digos-yann/vqe-quantum-simulation/data/LiH/sto-3g/vqe_cache/lih_vqe_cfg-4q_no_parity_z2_basis-sto-3g_mapper-jw_active-2e2o_freeze-false_z2-false_numpart-false_ansatz-real_amplitudes-r2_opt-cobyla-160_seed-137_fci-fci_0bf1ca3a9d.csv",
+  "fci_reference_csv": "/Users/fabio/workspace/projects/PIBIC-FACEPE-2025-yann/pibic-yann-2025/co\u0301digos-yann/vqe-quantum-simulation/data/LiH/sto-3g/fci_0bf1ca3a9d.csv",
+  "settings": {
+    "basis": "sto-3g",
+    "ansatz_name": "real_amplitudes",
+    "ansatz_reps": 2,
+    "optimizer": "cobyla",
+    "optimizer_max_iter": 160,
+    "seed": 137
+  },
+  "hamiltonian_config": {
+    "label": "4q_no_parity_z2",
+    "active_space": [
+      2,
+      2
+    ],
+    "freeze_core": false,
+    "mapper": "jw",
+    "z2symmetry_reduction": false,
+    "use_num_particles": false
+  },
+  "rows_total": 100,
+  "rows_ok": 100
+}

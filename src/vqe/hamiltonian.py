@@ -1,17 +1,24 @@
-from typing import Dict, Optional, Tuple, cast
+from typing import Dict, Optional, Sequence, Tuple, cast
 
+import numpy as np
 from qiskit.quantum_info import SparsePauliOp
 from qiskit_nature.second_q.drivers import PySCFDriver
-from qiskit_nature.second_q.mappers import JordanWignerMapper, ParityMapper
+from qiskit_nature.second_q.mappers import BravyiKitaevMapper, JordanWignerMapper, ParityMapper
 from qiskit_nature.second_q.operators import FermionicOp
 from qiskit_nature.second_q.problems import ElectronicStructureProblem
 from qiskit_nature.second_q.transformers import FreezeCoreTransformer, ActiveSpaceTransformer
+
+
+# Compatibility for dependencies that still call the removed NumPy alias.
+if not hasattr(np, "in1d"):
+    np.in1d = np.isin
 
 
 def build_electronic_hamiltonian(
         atom_string: str,
         basis: str = "sto-3g",
         active_space: Optional[Tuple[int, int]] = None,
+    active_orbitals: Optional[Sequence[int]] = None,
         homo_lumo_window: int = 2,
         freeze_core: bool = True
 ) -> Tuple[FermionicOp, float]:
@@ -25,28 +32,37 @@ def build_electronic_hamiltonian(
     problem = driver.run()
 
 
-    # --- Define active space ---
-    if active_space:
-        n_active_electrons, n_active_orbitals = active_space
-    else:
-        n_active_orbitals = homo_lumo_window * 2
-        n_active_electrons = n_active_orbitals
-
-    transformer = ActiveSpaceTransformer(
-        num_electrons=n_active_electrons,
-        num_spatial_orbitals=n_active_orbitals,
-        active_orbitals=None
-    )
-
     if freeze_core:
         core_transformer = FreezeCoreTransformer()
         problem = core_transformer.transform(problem)
 
+    # Full-space mode: represent full problem explicitly as an active space equal
+    # to the full system, which keeps metadata consistent for tapering workflows.
+    if active_space is not None:
+        n_active_electrons, n_active_orbitals = active_space
+    elif homo_lumo_window > 0:
+        n_active_orbitals = homo_lumo_window * 2
+        n_active_electrons = n_active_orbitals
+    else:
+        n_alpha, n_beta = problem.num_particles
+        n_active_electrons = int(n_alpha + n_beta)
+        n_active_orbitals = int(problem.num_spatial_orbitals)
+
+    transformer = ActiveSpaceTransformer(
+        num_electrons=n_active_electrons,
+        num_spatial_orbitals=n_active_orbitals,
+        active_orbitals=list(active_orbitals) if active_orbitals is not None else None,
+    )
     problem = cast(ElectronicStructureProblem, transformer.transform(problem))
 
     fermionic_op = problem.hamiltonian.second_q_op()
 
-    constant_energy = problem.nuclear_repulsion_energy + problem.hamiltonian.constants.get('ElectronicEnergy', 0)
+    # Sum all scalar offsets tracked by Qiskit Nature (nuclear repulsion,
+    # freeze-core shifts, active-space shifts, etc.) to keep a consistent
+    # energy zero between qubit and molecular references.
+    constant_energy = float(
+        sum(float(np.real(v)) for v in problem.hamiltonian.constants.values())
+    )
 
     return fermionic_op, constant_energy
 
@@ -55,6 +71,7 @@ def build_electronic_problem(
         atom_string: str,
         basis: str = "sto-3g",
         active_space: Optional[Tuple[int, int]] = None,
+    active_orbitals: Optional[Sequence[int]] = None,
         homo_lumo_window: int = 2,
         freeze_core: bool = True,
 ) -> ElectronicStructureProblem:
@@ -65,23 +82,28 @@ def build_electronic_problem(
         driver = PySCFDriver(atom=atom_string, basis=basis)
     problem = driver.run()
 
-    if active_space:
-        n_active_electrons, n_active_orbitals = active_space
-    else:
-        n_active_orbitals = homo_lumo_window * 2
-        n_active_electrons = n_active_orbitals
-
-    transformer = ActiveSpaceTransformer(
-        num_electrons=n_active_electrons,
-        num_spatial_orbitals=n_active_orbitals,
-        active_orbitals=None,
-    )
-
     if freeze_core:
         core_transformer = FreezeCoreTransformer()
         problem = core_transformer.transform(problem)
 
-    return cast(ElectronicStructureProblem, transformer.transform(problem))
+    if active_space is not None:
+        n_active_electrons, n_active_orbitals = active_space
+    elif homo_lumo_window > 0:
+        n_active_orbitals = homo_lumo_window * 2
+        n_active_electrons = n_active_orbitals
+    else:
+        n_alpha, n_beta = problem.num_particles
+        n_active_electrons = int(n_alpha + n_beta)
+        n_active_orbitals = int(problem.num_spatial_orbitals)
+
+    transformer = ActiveSpaceTransformer(
+        num_electrons=n_active_electrons,
+        num_spatial_orbitals=n_active_orbitals,
+        active_orbitals=list(active_orbitals) if active_orbitals is not None else None,
+    )
+    problem = cast(ElectronicStructureProblem, transformer.transform(problem))
+
+    return problem
 
 def build_qubit_hamiltonian(
         electronic_hamiltonian: FermionicOp,
@@ -93,6 +115,8 @@ def build_qubit_hamiltonian(
 
     if mapper == "jw":
         mapper_obj = JordanWignerMapper()
+    elif mapper == "bk":
+        mapper_obj = BravyiKitaevMapper()
     elif mapper == "parity":
         mapper_obj = ParityMapper(num_particles=num_particles)
     else:

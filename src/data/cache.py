@@ -3,7 +3,7 @@ import hashlib
 import json
 import time
 from pathlib import Path
-from typing import Optional, Tuple, Callable
+from typing import Callable, Optional, Sequence, Tuple
 
 import numpy as np
 from pyscf import gto
@@ -16,6 +16,7 @@ def _build_cache_config(
         molecule: str,
         basis: str,
         active_space: Optional[Tuple[int, int]],
+    active_orbitals: Optional[Tuple[int, ...]],
         homo_lumo_window: int,
         freeze_core: int,
 ) -> dict:
@@ -23,6 +24,7 @@ def _build_cache_config(
         "molecule": molecule,
         "basis": basis,
         "active_space": active_space,
+    "active_orbitals": active_orbitals,
         "homo_lumo_window": homo_lumo_window,
         "freeze_core": freeze_core,
     }
@@ -39,6 +41,7 @@ def cache_fci(
         distances: np.ndarray,
         basis: str = "sto-3g",
         active_space: Optional[Tuple[int, int]] = None,
+    active_orbitals: Optional[Sequence[int]] = None,
         homo_lumo_window: int = 2,
         freeze_core: int = 0,
         data_dir: Optional[Path] = None,
@@ -57,6 +60,7 @@ def cache_fci(
         molecule=molecule,
         basis=basis,
         active_space=active_space,
+        active_orbitals=tuple(active_orbitals) if active_orbitals is not None else None,
         homo_lumo_window=homo_lumo_window,
         freeze_core=freeze_core,
     )
@@ -136,6 +140,7 @@ def cache_fci(
                     atom_string=atom_string,
                     basis=basis,
                     active_space=active_space,
+                    active_orbitals=active_orbitals,
                     homo_lumo_window=homo_lumo_window,
                     freeze_core=freeze_core
                 )
@@ -218,6 +223,7 @@ def deduplicate_fci_cache(
                 molecule=meta["molecule"],
                 basis=meta["basis"],
                 active_space=active_space,
+                active_orbitals=tuple(meta.get("active_orbitals", []) or []) or None,
                 homo_lumo_window=meta.get("homo_lumo_window", 2),
                 freeze_core=meta.get("freeze_core", 0),
             )
