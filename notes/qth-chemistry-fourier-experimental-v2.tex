@@ -1,15 +1,26 @@
-\documentclass[11pt]{article}
+\documentclass[12pt]{article}
 
-\usepackage{amsmath,amssymb,graphicx}
-\usepackage{hyperref}
-\usepackage{geometry}
-\geometry{margin=1in}
+\usepackage{jheppub}
+\usepackage{iip-arxiv}
+\toccontinuoustrue % Não quebra a página título
+\compress % Comprime o resumo e sumário para caber em uma página
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{braket}
+\usepackage{xcolor}
 
 \title{On the Effective Single-Harmonic Structure of Local Energy Landscapes in Molecular VQE}
 
-\author{Your Name}
+\author[a]{Yann K. J. Leão}
+\affiliation[a]{Academic Unit of Belo Jardim\\ Federal Rural University of Pernambuco}
+\emailAdd{yann.kjleao@ufrpe.br}
+\author[a]{and Fábio Novaes}
+\emailAdd{fabio.novaes@ufrpe.br}
 
-\date{}
+
+\date{\today}
+\abstract{Variational Quantum Algorithms (VQAs) are widely used for estimating ground-state energies of molecular systems, but their optimization remains challenging due to the non-convex structure of the energy landscape. In this work, we investigate the Fourier structure of VQE energy landscapes for molecular systems and uncover a simple but robust pattern: along one-dimensional directions in parameter space, the energy is consistently dominated by a single harmonic component near the optimum. We demonstrate this behavior empirically for H$_2$, LiH, and BeH$_2$, using parity mapping with $\mathbb{Z}_2$ tapering, where the Fourier spectrum exhibits near-zero spectral entropy, indicating an effectively monofrequency structure. Leveraging this observation, we propose to use the approximate Fourier minimum along a given direction as the initial guess for optimization. Our results show that this approach improves the accuracy of VQE optimization compared to standard methods. These findings suggest that, despite the apparent complexity of VQE landscapes, their local structure is highly regular and can be exploited to design more efficient optimization strategies, opening new opportunities for integrating structured models into quantum chemistry simulations.}
 
 \begin{document}
 
@@ -111,6 +122,9 @@ We compare this approximation with higher-order Fourier reconstruction and direc
 % ============================================================
 \section{Results}
 
+Across H2, LiH, and BeH2, local directional spectra are strongly concentrated in the first harmonic (mean R1 $\sim$ 
+1.0 and near-zero normalized entropy), while global random directions show broader spectra. This validates the claim that first-harmonic dominance is a local empirical regularity rather than a global property of the landscape. Consistently, in the global-random regime the K=1 surrogate is less accurate than higher-order truncations: RMSE(K=1)/RMSE(K=3) is approximately 1.60 (H2), 2.72 (LiH), and 2.00 (BeH2), indicating a clear improvement when additional harmonics are included away from the optimum.
+
 \subsection{Spectral Structure}
 
 Across all tested systems, we observe that the first harmonic dominates the spectrum near optimal solutions, with spectral entropy close to zero.
@@ -129,14 +143,18 @@ We compare:
 
 Results show that the first-harmonic model provides a good approximation of the minimum while requiring significantly fewer evaluations.
 
+
 % ============================================================
 \section{Discussion}
+
+The optimization evidence supports a practical trade-off. With analytic guidance based on three probes ($\theta = 0, \pm\pi/2$), guided initialization improves final energy error in harder cases (notably LiH and BeH$_2$) while adding only a small fixed overhead to total cost. In this protocol, total cost is reported as \texttt{eval\_count + guide\_cost}, so the guided mode can still be slightly more expensive when optimizer evaluations are already near the iteration limit, but the cost gap is now marginal compared with the error reduction. Therefore, the main claim is a local cost-accuracy trade-off under spectral regularity, not universal dominance of K=1 or strict speedup in all settings.
 
 Our results suggest that, in small molecular VQE instances, the local energy landscape is effectively low-dimensional and dominated by a single harmonic component.
 
 This explains why simple optimization strategies often perform well in practice and indicates that exact reconstruction of the full trigonometric structure may be unnecessary in many cases.
 
 The main contribution is therefore not a new optimization principle, but an empirical observation that enables a cheaper approximation with favorable performance.
+
 
 % ============================================================
 \section{Conclusion}
