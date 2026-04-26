@@ -1,0 +1,8 @@
+{
+    "molecule": "H2",
+    "basis": "sto-3g",
+    "active_space": null,
+    "active_orbitals": null,
+    "homo_lumo_window": 0,
+    "freeze_core": 0
+}
