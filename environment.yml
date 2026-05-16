@@ -10,11 +10,4 @@ dependencies:
   - pyscf
   - pip
   - pip:
-      - qiskit
-      - qiskit-aer
-      - qiskit-algorithms
-      - qiskit-nature
-      - qiskit-ibm-runtime
-      - pylatexenc
-      - jupyter
-      - python-dotenv
+      - -e .[dev]

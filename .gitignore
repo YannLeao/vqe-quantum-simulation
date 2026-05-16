@@ -1,33 +1,47 @@
-# Arquivos específicos do Jupyter/Colab
+# Jupyter/Colab files
 .ipynb_checkpoints/
 __pycache__/
+*.egg-info/
 
-# Arquivos temporários/outputs
+# Temporary files/outputs
 *.tmp
 *.temp
 *.bak
 
-# Dados grandes ou sensíveis (não versionados)
+# Large or sensitive data (not versioned)
 data/raw/
 data/external/
 outputs/
 models/
 notebooks/experiments/
 
-# Configurações de IDE (PyCharm/VSCode)
+# IDE settings (PyCharm/VSCode)
 .idea/
 .vscode/
 *.iml
 
-# Saídas de notebooks
+# Notebook outputs
 notebooks/*.csv
 notebooks/*.png
 notebooks/.ipynb_checkpoints/
 notebooks/*.ipynb_checkpoints*
 
-# Credenciais
+# Credentials
 .env
 
-# Notes for Obsidian
-# notes/
+# LaTeX build artifacts
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.lof
+*.log
+*.lot
+*.out
+*.run.xml
+*.synctex.gz
+*.toc
+
 .DS_Store
