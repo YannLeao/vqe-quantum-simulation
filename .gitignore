@@ -23,6 +23,7 @@ notebooks/experiments/
 # Notebook outputs
 notebooks/*.csv
 notebooks/*.png
+notebooks/data/
 notebooks/.ipynb_checkpoints/
 notebooks/*.ipynb_checkpoints*
 

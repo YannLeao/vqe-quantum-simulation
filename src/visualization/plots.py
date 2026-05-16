@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
 
-from src.utils.paths import get_project_root
+from src.data.paths import get_fci_cache_dir
 
 
 def plot_error(
@@ -56,9 +56,6 @@ def plot_fci(
         show: bool = True
 ):
 
-    if data_dir is None:
-        data_dir = get_project_root() / "data"
-
     basis_list = [basis] if isinstance(basis, str) else list(basis)
     if not basis_list:
         raise ValueError("basis must contain at least one basis name")
@@ -66,7 +63,7 @@ def plot_fci(
     plt.figure()
 
     for basis_name in basis_list:
-        path = data_dir / molecule / basis_name
+        path = get_fci_cache_dir(molecule, basis_name, data_dir=data_dir)
         files = sorted(path.glob("fci_*.csv"))
 
         if not files:
