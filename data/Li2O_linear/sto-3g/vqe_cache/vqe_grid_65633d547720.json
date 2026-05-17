@@ -1,0 +1,47 @@
+{
+  "system": {
+    "name": "Li2O_linear",
+    "basis": "sto-3g",
+    "distances": [
+      1.4,
+      1.8,
+      2.2
+    ],
+    "active_space": [
+      4,
+      4
+    ],
+    "active_orbitals": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "homo_lumo_window": 0,
+    "freeze_core": true
+  },
+  "parameter_grid": {
+    "mapper": [
+      "jw"
+    ],
+    "ansatz": [
+      "real_amplitudes"
+    ],
+    "reps": [
+      1,
+      2
+    ],
+    "optimizer": [
+      "cobyla"
+    ],
+    "max_iter": [
+      120
+    ],
+    "seed": [
+      137
+    ]
+  },
+  "estimator": "StatevectorEstimator",
+  "created_at": 1779029673.7042682,
+  "csv": "/mnt/c/Users/yannk/PycharmProjects/vqe-quantum-simulation/data/Li2O_linear/sto-3g/vqe_cache/vqe_grid_65633d547720.csv"
+}

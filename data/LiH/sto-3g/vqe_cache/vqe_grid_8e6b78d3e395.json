@@ -1,0 +1,46 @@
+{
+  "system": {
+    "name": "LiH",
+    "basis": "sto-3g",
+    "distances": [
+      1.2,
+      1.5949,
+      2.2
+    ],
+    "active_space": [
+      2,
+      3
+    ],
+    "active_orbitals": [
+      0,
+      1,
+      2
+    ],
+    "homo_lumo_window": 0,
+    "freeze_core": true
+  },
+  "parameter_grid": {
+    "mapper": [
+      "jw"
+    ],
+    "ansatz": [
+      "real_amplitudes"
+    ],
+    "reps": [
+      1,
+      2
+    ],
+    "optimizer": [
+      "cobyla"
+    ],
+    "max_iter": [
+      120
+    ],
+    "seed": [
+      137
+    ]
+  },
+  "estimator": "StatevectorEstimator",
+  "created_at": 1779029660.084931,
+  "csv": "/mnt/c/Users/yannk/PycharmProjects/vqe-quantum-simulation/data/LiH/sto-3g/vqe_cache/vqe_grid_8e6b78d3e395.csv"
+}

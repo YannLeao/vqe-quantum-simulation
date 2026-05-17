@@ -8,6 +8,7 @@ dependencies:
   - pandas
   - matplotlib
   - pyscf
+  - qiskit
   - pip
   - pip:
       - -e .[dev]

@@ -1,0 +1,39 @@
+{
+  "system": {
+    "name": "H2",
+    "basis": "sto-3g",
+    "distances": [
+      0.5,
+      0.735,
+      1.0
+    ],
+    "active_space": null,
+    "active_orbitals": null,
+    "homo_lumo_window": 0,
+    "freeze_core": false
+  },
+  "parameter_grid": {
+    "mapper": [
+      "jw"
+    ],
+    "ansatz": [
+      "real_amplitudes"
+    ],
+    "reps": [
+      1,
+      2
+    ],
+    "optimizer": [
+      "cobyla"
+    ],
+    "max_iter": [
+      120
+    ],
+    "seed": [
+      137
+    ]
+  },
+  "estimator": "StatevectorEstimator",
+  "created_at": 1779029647.1607208,
+  "csv": "/mnt/c/Users/yannk/PycharmProjects/vqe-quantum-simulation/data/H2/sto-3g/vqe_cache/vqe_grid_ffaf75d811e6.csv"
+}
