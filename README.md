@@ -47,8 +47,8 @@ jupyter lab
 Suggested reading order:
 
 1. `notebooks/00_fci_cache_baseline.ipynb`: baseline cache workflow for FCI data.
-2. `notebooks/01_fourier_analysis.ipynb`: exploratory Fourier analysis.
-3. `notebooks/02_fourier_tradeoff_article_plan.ipynb`: article/tradeoff planning experiments.
+2. `notebooks/01_vqe_grid_search.ipynb`: noiseless VQE grid search with `StatevectorEstimator`.
+3. `notebooks/experiments/`: exploratory Fourier analysis and backend-noise notebooks.
 
 ## Notes On Data
 

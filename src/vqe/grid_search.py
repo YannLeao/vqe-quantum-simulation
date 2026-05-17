@@ -24,6 +24,8 @@ def run_vqe_grid_search(
         overwrite: bool = False,
         include_fci_reference: bool = True,
         chemical_accuracy_kcal_mol: float = CHEMICAL_ACCURACY_KCAL_MOL,
+        run_label: str = "statevector",
+        run_metadata: Optional[dict[str, Any]] = None,
 ) -> pd.DataFrame:
     """Run a VQE grid search and cache one CSV/JSON pair per molecule/basis."""
     estimator = estimator or StatevectorEstimator()
@@ -43,13 +45,15 @@ def run_vqe_grid_search(
             },
             "parameter_grid": parameter_grid,
             "estimator": estimator.__class__.__name__,
+            "run_label": run_label,
+            "run_metadata": run_metadata or {},
             "include_fci_reference": include_fci_reference,
             "chemical_accuracy_kcal_mol": chemical_accuracy_kcal_mol,
         }
         run_hash = _stable_hash(signature_payload)
         cache_dir = get_vqe_cache_dir(system.name, system.basis, create=True)
-        csv_path = cache_dir / f"vqe_grid_{run_hash}.csv"
-        json_path = cache_dir / f"vqe_grid_{run_hash}.json"
+        csv_path = cache_dir / f"vqe_grid_{run_label}_{run_hash}.csv"
+        json_path = cache_dir / f"vqe_grid_{run_label}_{run_hash}.json"
 
         if cache and csv_path.exists() and not overwrite:
             all_rows.extend(pd.read_csv(csv_path).to_dict("records"))
@@ -71,6 +75,8 @@ def run_vqe_grid_search(
                         reference_energy=reference.get("energy"),
                         reference_method=reference.get("method"),
                         chemical_accuracy_kcal_mol=chemical_accuracy_kcal_mol,
+                        run_label=run_label,
+                        run_metadata=run_metadata,
                     )
                 )
 
@@ -113,6 +119,8 @@ def _result_to_row(
         reference_energy: Optional[float] = None,
         reference_method: Optional[str] = None,
         chemical_accuracy_kcal_mol: float = CHEMICAL_ACCURACY_KCAL_MOL,
+        run_label: str = "statevector",
+        run_metadata: Optional[dict[str, Any]] = None,
 ) -> dict[str, Any]:
     config = result["config"]
     timings = result.get("timings", {})
@@ -134,6 +142,10 @@ def _result_to_row(
 
     return {
         "molecule": config["molecule"],
+        "run_label": run_label,
+        "noise_source": (run_metadata or {}).get("noise_source"),
+        "backend_name": (run_metadata or {}).get("backend_name"),
+        "shots": (run_metadata or {}).get("shots"),
         "basis": config["basis"],
         "distance": config["distance"],
         "mapper": config.get("mapper", "jw"),

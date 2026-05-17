@@ -5,7 +5,7 @@ import numpy as np
 from qiskit.primitives import BaseEstimatorV2
 
 from src.vqe.ansatz import build_ansatz
-from src.vqe.hamiltonian import build_qubit_hamiltonian, build_electronic_hamiltonian
+from src.vqe.hamiltonian import build_qubit_hamiltonian, build_electronic_problem
 from src.vqe.optimizer import get_optimizer
 from src.vqe.vqe_runner import run_vqe
 
@@ -22,7 +22,7 @@ def run_experiment(
 
     # --- Build electronic problem and mapping qubit hamiltonian ---
     t0 = time.perf_counter()
-    fermionic_op, constant_energy = build_electronic_hamiltonian(
+    problem = build_electronic_problem(
         atom_string=config["geometry"],
         basis=config["basis"],
         active_space=config.get("active_space"),
@@ -30,12 +30,16 @@ def run_experiment(
         homo_lumo_window=config.get("homo_lumo_window", 0),
         freeze_core=config.get("freeze_core", 0)
     )
+    fermionic_op = problem.hamiltonian.second_q_op()
+    constant_energy = float(
+        sum(float(np.real(v)) for v in problem.hamiltonian.constants.values())
+    )
     qubit_op = build_qubit_hamiltonian(
         fermionic_op,
         mapper=config.get("mapper", "jw"),
         z2symmetry_reduction=config.get("z2symmetry_reduction", False),
-        problem=config.get("problem"),
-        num_particles=config.get("num_particles"),
+        problem=problem,
+        num_particles=problem.num_particles,
     )
     timings["setup_hamiltonian"] = time.perf_counter() - t0
 
@@ -45,8 +49,8 @@ def run_experiment(
         name=config["ansatz"],
         num_qubits=num_qubits,
         reps=config.get("reps", 1),
-        num_particles=config.get("num_particles"),
-        num_spatial_orbitals=config.get("num_spatial_orbitals")
+        num_particles=config.get("num_particles", problem.num_particles),
+        num_spatial_orbitals=config.get("num_spatial_orbitals", problem.num_spatial_orbitals)
     )
 
     optimizer = get_optimizer(
