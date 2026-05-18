@@ -1,11 +1,15 @@
 {
   "system": {
     "name": "Li2O_linear",
-    "basis": "sto-3g",
+    "basis": "6-31g",
     "distances": [
-      1.4,
+      1.2,
+      1.5,
       1.8,
-      2.2
+      2.1,
+      2.4,
+      2.8,
+      3.2
     ],
     "active_space": [
       4,
@@ -25,23 +29,30 @@
       "jw"
     ],
     "ansatz": [
-      "real_amplitudes"
+      "real_amplitudes",
+      "efficient_su2"
     ],
     "reps": [
       1,
       2
     ],
     "optimizer": [
-      "cobyla"
+      "cobyla",
+      "slsqp",
+      "spsa"
     ],
     "max_iter": [
-      120
+      100
     ],
     "seed": [
       137
     ]
   },
   "estimator": "StatevectorEstimator",
-  "created_at": 1779029673.7042682,
-  "csv": "/mnt/c/Users/yannk/PycharmProjects/vqe-quantum-simulation/data/Li2O_linear/sto-3g/vqe_cache/vqe_grid_65633d547720.csv"
+  "run_label": "statevector",
+  "run_metadata": {},
+  "include_fci_reference": true,
+  "chemical_accuracy_kcal_mol": 1.0,
+  "created_at": 1779072769.9592042,
+  "csv": "/mnt/c/Users/yannk/PycharmProjects/vqe-quantum-simulation/data/Li2O_linear/6-31g/vqe_cache/vqe_grid_statevector_a17e76c2f3d4.csv"
 }

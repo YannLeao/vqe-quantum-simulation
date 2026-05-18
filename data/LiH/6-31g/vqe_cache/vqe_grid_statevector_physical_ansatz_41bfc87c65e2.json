@@ -30,12 +30,11 @@
       "jw"
     ],
     "ansatz": [
-      "real_amplitudes",
-      "efficient_su2"
+      "uccsd",
+      "puccsd"
     ],
     "reps": [
-      1,
-      2
+      1
     ],
     "optimizer": [
       "cobyla",
@@ -49,8 +48,10 @@
     ]
   },
   "estimator": "StatevectorEstimator",
+  "run_label": "statevector_physical_ansatz",
+  "run_metadata": {},
   "include_fci_reference": true,
   "chemical_accuracy_kcal_mol": 1.0,
-  "created_at": 1779035321.3890493,
-  "csv": "/mnt/c/Users/yannk/PycharmProjects/vqe-quantum-simulation/data/LiH/6-31g/vqe_cache/vqe_grid_8cce993e93d0.csv"
+  "created_at": 1779063827.6100554,
+  "csv": "/mnt/c/Users/yannk/PycharmProjects/vqe-quantum-simulation/data/LiH/6-31g/vqe_cache/vqe_grid_statevector_physical_ansatz_41bfc87c65e2.csv"
 }

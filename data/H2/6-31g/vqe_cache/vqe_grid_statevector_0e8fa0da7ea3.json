@@ -32,18 +32,21 @@
     ],
     "optimizer": [
       "cobyla",
-      "slsqp"
+      "slsqp",
+      "spsa"
     ],
     "max_iter": [
-      250
+      100
     ],
     "seed": [
       137
     ]
   },
   "estimator": "StatevectorEstimator",
+  "run_label": "statevector",
+  "run_metadata": {},
   "include_fci_reference": true,
   "chemical_accuracy_kcal_mol": 1.0,
-  "created_at": 1779034444.0695953,
-  "csv": "/mnt/c/Users/yannk/PycharmProjects/vqe-quantum-simulation/data/H2/6-31g/vqe_cache/vqe_grid_826bb4975be4.csv"
+  "created_at": 1779069959.8692904,
+  "csv": "/mnt/c/Users/yannk/PycharmProjects/vqe-quantum-simulation/data/H2/6-31g/vqe_cache/vqe_grid_statevector_0e8fa0da7ea3.csv"
 }

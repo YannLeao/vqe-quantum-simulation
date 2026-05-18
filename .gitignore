@@ -14,6 +14,7 @@ data/external/
 outputs/
 models/
 notebooks/experiments/
+ai/
 
 # IDE settings (PyCharm/VSCode)
 .idea/
