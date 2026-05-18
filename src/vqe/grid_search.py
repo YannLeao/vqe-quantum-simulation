@@ -67,7 +67,22 @@ def run_vqe_grid_search(
         for distance in system.distances:
             for params in params_list:
                 config = _build_experiment_config(system, distance, params)
-                result = run_experiment(config, estimator=estimator)
+                try:
+                    result = run_experiment(config, estimator=estimator)
+                except Exception as exc:
+                    result = {
+                        "energy": np.nan,
+                        "vqe_raw_energy": np.nan,
+                        "eval_count": 0,
+                        "optimal_params": None,
+                        "history": [],
+                        "success": False,
+                        "error": str(exc),
+                        "error_type": type(exc).__name__,
+                        "timings": {},
+                        "config": config.copy(),
+                        "metadata": {},
+                    }
                 reference = references.get(float(distance), {})
                 rows.append(
                     _result_to_row(
@@ -168,6 +183,7 @@ def _result_to_row(
         "eval_count": result.get("eval_count"),
         "success": result.get("success"),
         "error": result.get("error"),
+        "error_type": result.get("error_type"),
         "num_qubits": metadata.get("num_qubits"),
         "num_terms": metadata.get("num_terms"),
         "constant_energy": metadata.get("constant_energy"),

@@ -29,20 +29,20 @@ def run_vqe(
     def callback(eval_count, params, mean, metadata):
         history.append(mean)
 
-    if initial_point is None:
-        initial_point = np.random.uniform(-np.pi, np.pi, ansatz.num_parameters)
-
-    start_time = time.perf_counter()
-
-    vqe = VQE(
-        estimator=estimator,
-        ansatz=ansatz,
-        optimizer=optimizer,
-        callback=callback,
-        initial_point=initial_point
-    )
-
     try:
+        if initial_point is None:
+            initial_point = np.random.uniform(-np.pi, np.pi, ansatz.num_parameters)
+
+        start_time = time.perf_counter()
+
+        vqe = VQE(
+            estimator=estimator,
+            ansatz=ansatz,
+            optimizer=optimizer,
+            callback=callback,
+            initial_point=initial_point
+        )
+
         result = vqe.compute_minimum_eigenvalue(qubit_op)
 
         end_time = time.perf_counter()
@@ -60,4 +60,8 @@ def run_vqe(
         }
 
     except Exception as e:
-        return {"success": False, "error": str(e)}
+        return {
+            "success": False,
+            "error": str(e),
+            "error_type": type(e).__name__,
+        }

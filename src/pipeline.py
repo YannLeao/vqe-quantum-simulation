@@ -80,6 +80,7 @@ def run_experiment(
             "history": [],
             "success": False,
             "error": vqe_result.get("error"),
+            "error_type": vqe_result.get("error_type"),
             "timings": timings,
             "config": config.copy(),
             "metadata": {

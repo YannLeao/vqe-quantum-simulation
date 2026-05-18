@@ -1,4 +1,3 @@
-from data.cache import cache_fci, deduplicate_fci_cache
 from src.data.inventory import classify_data_file, summarize_data_dir
 from src.data.paths import (
     get_data_dir,
