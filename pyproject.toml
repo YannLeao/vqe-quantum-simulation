@@ -8,6 +8,26 @@ version = "0.1.0"
 description = "VQE and FCI simulation utilities"
 readme = "README.md"
 requires-python = ">=3.10"
+dependencies = [
+    "matplotlib",
+    "numpy",
+    "pandas",
+    "pylatexenc",
+    "pyscf",
+    "python-dotenv",
+    "qiskit",
+    "qiskit-aer",
+    "qiskit-algorithms",
+    "qiskit-ibm-runtime",
+    "qiskit-nature",
+    "scipy",
+]
+
+[project.optional-dependencies]
+dev = [
+    "ipykernel",
+    "jupyter",
+]
 
 [tool.setuptools]
 include-package-data = true

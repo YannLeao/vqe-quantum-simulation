@@ -8,8 +8,8 @@ from typing import Callable, Optional, Sequence, Tuple
 import numpy as np
 from pyscf import gto
 
+from src.data.paths import get_data_dir, get_fci_cache_dir
 from src.solvers.fci import compute_fci_energy
-from src.utils.paths import get_project_root
 
 
 def _build_cache_config(
@@ -49,11 +49,7 @@ def cache_fci(
         verbose: bool = True,
 ):
     # --- Setup paths ---
-    if data_dir is None:
-        data_dir = get_project_root() / "data"
-
-    path = data_dir / molecule / basis
-    path.mkdir(parents=True, exist_ok=True)
+    path = get_fci_cache_dir(molecule, basis, data_dir=data_dir, create=True)
 
     # -- Experiment signature
     config = _build_cache_config(
@@ -197,8 +193,7 @@ def deduplicate_fci_cache(
     A assinatura é inferida do arquivo .json pareado (molecule, basis, active_space,
     homo_lumo_window, freeze_core). Arquivos sem metadata válida são preservados.
     """
-    if data_dir is None:
-        data_dir = get_project_root() / "data"
+    data_dir = get_data_dir(data_dir)
 
     kept_csv = []
     removed_csv = []

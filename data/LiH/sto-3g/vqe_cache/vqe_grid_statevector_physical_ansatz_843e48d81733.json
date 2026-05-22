@@ -1,0 +1,57 @@
+{
+  "system": {
+    "name": "LiH",
+    "basis": "sto-3g",
+    "distances": [
+      1.0,
+      1.2,
+      1.4,
+      1.5949,
+      1.8,
+      2.1,
+      2.4,
+      2.8,
+      3.2
+    ],
+    "active_space": [
+      2,
+      3
+    ],
+    "active_orbitals": [
+      0,
+      1,
+      2
+    ],
+    "homo_lumo_window": 0,
+    "freeze_core": true
+  },
+  "parameter_grid": {
+    "mapper": [
+      "jw"
+    ],
+    "ansatz": [
+      "uccsd",
+      "puccsd"
+    ],
+    "reps": [
+      1
+    ],
+    "optimizer": [
+      "cobyla",
+      "slsqp"
+    ],
+    "max_iter": [
+      250
+    ],
+    "seed": [
+      137
+    ]
+  },
+  "estimator": "StatevectorEstimator",
+  "run_label": "statevector_physical_ansatz",
+  "run_metadata": {},
+  "include_fci_reference": true,
+  "chemical_accuracy_kcal_mol": 1.0,
+  "created_at": 1779062736.0509834,
+  "csv": "/mnt/c/Users/yannk/PycharmProjects/vqe-quantum-simulation/data/LiH/sto-3g/vqe_cache/vqe_grid_statevector_physical_ansatz_843e48d81733.csv"
+}
