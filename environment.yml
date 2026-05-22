@@ -9,6 +9,8 @@ dependencies:
   - matplotlib
   - pyscf
   - qiskit
+  - qiskit-algorithms
+  - qiskit-nature
   - pip
   - pip:
       - -e .[dev]
