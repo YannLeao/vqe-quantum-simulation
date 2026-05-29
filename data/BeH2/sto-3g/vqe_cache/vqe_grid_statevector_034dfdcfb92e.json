@@ -1,0 +1,62 @@
+{
+  "system": {
+    "name": "BeH2",
+    "basis": "sto-3g",
+    "distances": [
+      0.5,
+      0.8,
+      1.1,
+      1.4,
+      1.7,
+      2.0,
+      2.3,
+      2.6,
+      3.0
+    ],
+    "active_space": [
+      4,
+      4
+    ],
+    "active_orbitals": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "homo_lumo_window": 0,
+    "freeze_core": true
+  },
+  "parameter_grid": {
+    "mapper": [
+      "jw"
+    ],
+    "ansatz": [
+      "real_amplitudes",
+      "efficient_su2"
+    ],
+    "reps": [
+      1,
+      2
+    ],
+    "optimizer": [
+      "cobyla",
+      "slsqp",
+      "spsa"
+    ],
+    "max_iter": [
+      100
+    ],
+    "seed": [
+      137
+    ]
+  },
+  "estimator": "StatevectorEstimator",
+  "run_label": "statevector",
+  "run_metadata": {
+    "temporary_runner": "beh2_only"
+  },
+  "include_fci_reference": true,
+  "chemical_accuracy_kcal_mol": 1.0,
+  "created_at": 1780077999.8607485,
+  "csv": "/mnt/c/Users/yannk/PycharmProjects/vqe-quantum-simulation/data/BeH2/sto-3g/vqe_cache/vqe_grid_statevector_034dfdcfb92e.csv"
+}
