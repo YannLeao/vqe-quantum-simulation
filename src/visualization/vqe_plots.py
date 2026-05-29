@@ -13,6 +13,7 @@ MOLECULE_LABELS = {
     "H2": "H2",
     "LiH": "LiH",
     "Li2O_linear": "Li2O linear",
+    "BeH2": "BeH2",
 }
 
 MARKERS = ["o", "s", "^", "D", "X", "P", "v", "*"]

@@ -28,6 +28,10 @@ def li2o_linear_geometry(distance: float | int) -> str:
     return f"Li 0 0 {-distance}; O 0 0 0; Li 0 0 {distance}"
 
 
+def beh2_linear_geometry(distance: float | int) -> str:
+    return f"Be 0 0 0; H 0 0 {distance}; H 0 0 {-distance}"
+
+
 def default_statevector_systems() -> list[MolecularSystem]:
     """Small default systems for a first noiseless VQE grid search."""
     return [
@@ -56,6 +60,15 @@ def default_statevector_systems() -> list[MolecularSystem]:
             active_orbitals=(0, 1, 2, 3),
             freeze_core=True,
         ),
+        MolecularSystem(
+            name="BeH2",
+            basis="sto-3g",
+            geometry_fn=beh2_linear_geometry,
+            distances=(0.8, 1.4, 2.0),
+            active_space=(4, 4),
+            active_orbitals=(0, 1, 2, 3),
+            freeze_core=True,
+        ),
     ]
 
 
@@ -80,6 +93,7 @@ def statevector_grid_systems(profile: str = "full") -> list[MolecularSystem]:
     h2_distances = tuple(float(x) for x in (0.35, 0.50, 0.65, 0.735, 0.90, 1.10, 1.40, 1.80, 2.20))
     lih_distances = tuple(float(x) for x in (1.00, 1.20, 1.40, 1.5949, 1.80, 2.10, 2.40, 2.80, 3.20))
     li2o_distances = tuple(float(x) for x in (1.20, 1.50, 1.80, 2.10, 2.40, 2.80, 3.20))
+    beh2_distances = tuple(float(x) for x in (0.50, 0.80, 1.10, 1.40, 1.70, 2.00, 2.30, 2.60, 3.00))
 
     systems: list[MolecularSystem] = []
 
@@ -114,6 +128,19 @@ def statevector_grid_systems(profile: str = "full") -> list[MolecularSystem]:
                 basis=basis,
                 geometry_fn=li2o_linear_geometry,
                 distances=li2o_distances,
+                active_space=(4, 4),
+                active_orbitals=(0, 1, 2, 3),
+                freeze_core=True,
+            )
+        )
+
+    for basis in ("sto-3g", "6-31g"):
+        systems.append(
+            MolecularSystem(
+                name="BeH2",
+                basis=basis,
+                geometry_fn=beh2_linear_geometry,
+                distances=beh2_distances,
                 active_space=(4, 4),
                 active_orbitals=(0, 1, 2, 3),
                 freeze_core=True,
