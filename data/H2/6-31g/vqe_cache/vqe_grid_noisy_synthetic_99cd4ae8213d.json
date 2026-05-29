@@ -1,0 +1,61 @@
+{
+  "system": {
+    "name": "H2",
+    "basis": "6-31g",
+    "distances": [
+      0.35,
+      0.5,
+      0.65,
+      0.735,
+      0.9,
+      1.1,
+      1.4,
+      1.8,
+      2.2
+    ],
+    "active_space": null,
+    "active_orbitals": null,
+    "homo_lumo_window": 0,
+    "freeze_core": false
+  },
+  "parameter_grid": {
+    "mapper": [
+      "jw"
+    ],
+    "ansatz": [
+      "real_amplitudes",
+      "efficient_su2"
+    ],
+    "reps": [
+      1,
+      2
+    ],
+    "optimizer": [
+      "cobyla",
+      "slsqp",
+      "spsa"
+    ],
+    "max_iter": [
+      100
+    ],
+    "seed": [
+      137
+    ]
+  },
+  "estimator": "EstimatorV2",
+  "run_label": "noisy_synthetic",
+  "run_metadata": {
+    "noise_source": "synthetic_depolarizing_readout",
+    "noise_pipeline": "aer_estimator_decomposed_ansatz_v1",
+    "shots": 2048,
+    "default_precision": 0.022097086912079608,
+    "seed_simulator": 137,
+    "single_qubit_depolarizing": 0.001,
+    "two_qubit_depolarizing": 0.01,
+    "readout_error": 0.02
+  },
+  "include_fci_reference": true,
+  "chemical_accuracy_kcal_mol": 1.0,
+  "created_at": 1780093575.6984932,
+  "csv": "/mnt/c/Users/yannk/PycharmProjects/vqe-quantum-simulation/data/H2/6-31g/vqe_cache/vqe_grid_noisy_synthetic_99cd4ae8213d.csv"
+}
