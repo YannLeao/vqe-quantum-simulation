@@ -119,13 +119,13 @@ def plot_harmonic_error(error_df: pd.DataFrame, ax=None):
     ax[0].set_title("Erro de reconstrução vs K")
     ax[0].set_xlabel("Ordem harmônica K")
     ax[0].set_ylabel("RMSE médio")
-    ax[0].set_yscale("log")
+    _set_log_scale_when_positive(ax[0], summary["mean_rmse"])
     ax[0].grid(alpha=0.25)
 
     ax[1].set_title("Erro no mínimo estimado vs K")
     ax[1].set_xlabel("Ordem harmônica K")
     ax[1].set_ylabel("Delta energia mínima médio")
-    ax[1].set_yscale("log")
+    _set_log_scale_when_positive(ax[1], summary["mean_delta_min"])
     ax[1].grid(alpha=0.25)
     ax[1].legend()
     return ax
@@ -188,3 +188,12 @@ def save_figure(fig, output_dir: str | Path, filename: str) -> Path:
     target = path / filename
     fig.savefig(target, dpi=300, bbox_inches="tight")
     return target
+
+
+def _set_log_scale_when_positive(ax, values: pd.Series):
+    positive_values = pd.to_numeric(values, errors="coerce")
+    positive_values = positive_values[positive_values > 0]
+    if len(positive_values) > 0:
+        ax.set_yscale("log")
+    else:
+        ax.set_yscale("linear")
