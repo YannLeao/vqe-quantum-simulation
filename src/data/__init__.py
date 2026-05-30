@@ -25,6 +25,7 @@ __all__ = [
 
 
 def __getattr__(name: str):
+    """Lazily import cache helpers to avoid importing PySCF during package import."""
     if name in {"cache_fci", "deduplicate_fci_cache"}:
         from src.data.cache import cache_fci, deduplicate_fci_cache
 

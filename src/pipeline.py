@@ -15,6 +15,35 @@ def run_experiment(
         initial_point: Optional[np.ndarray] = None,
         estimator: Optional[BaseEstimatorV2] = None,
 ) -> Dict[str, Any]:
+    """Run one complete molecular VQE experiment.
+
+    The pipeline builds the electronic problem, maps it to qubits, constructs
+    the requested ansatz and optimizer, executes VQE, and returns a normalized
+    result dictionary with timing and Hamiltonian metadata.
+
+    Parameters
+    ----------
+    config:
+        Experiment configuration. Required keys are ``geometry``, ``basis``,
+        ``ansatz``, and ``optimizer``. Common optional keys include
+        ``active_space``, ``active_orbitals``, ``homo_lumo_window``,
+        ``freeze_core``, ``mapper``, ``z2symmetry_reduction``, ``reps``,
+        ``max_iter``, and ``seed``.
+    initial_point:
+        Optional initial parameter vector passed to VQE. When omitted, the VQE
+        runner samples a random point from ``[-pi, pi]``.
+    estimator:
+        Optional Qiskit Estimator V2 primitive. Use ``None`` for the default
+        statevector estimator, or pass an Aer estimator for noisy simulation.
+
+    Returns
+    -------
+    Dict[str, Any]
+        Normalized experiment result. Successful runs include ``energy``,
+        ``vqe_raw_energy``, ``eval_count``, ``optimal_params``, ``history``,
+        ``timings``, ``config``, and ``metadata``. Failed runs keep the same
+        outer structure and include ``error``/``error_type``.
+    """
 
     timings = {}
 

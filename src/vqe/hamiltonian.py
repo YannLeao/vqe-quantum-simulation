@@ -8,7 +8,6 @@ from qiskit_nature.second_q.operators import FermionicOp
 from qiskit_nature.second_q.problems import ElectronicStructureProblem
 from qiskit_nature.second_q.transformers import FreezeCoreTransformer, ActiveSpaceTransformer
 
-
 # Compatibility for dependencies that still call the removed NumPy alias.
 if not hasattr(np, "in1d"):
     np.in1d = np.isin
@@ -18,10 +17,38 @@ def build_electronic_hamiltonian(
         atom_string: str,
         basis: str = "sto-3g",
         active_space: Optional[Tuple[int, int]] = None,
-    active_orbitals: Optional[Sequence[int]] = None,
+        active_orbitals: Optional[Sequence[int]] = None,
         homo_lumo_window: int = 2,
         freeze_core: bool = True
 ) -> Tuple[FermionicOp, float]:
+    """Build a second-quantized electronic Hamiltonian and scalar shift.
+
+    Parameters
+    ----------
+    atom_string:
+        PySCF atom specification, for example ``"H 0 0 0; H 0 0 0.735"``.
+    basis:
+        Atomic basis set passed to ``PySCFDriver``.
+    active_space:
+        Optional active space ``(n_electrons, n_spatial_orbitals)``. When
+        provided, it takes precedence over ``homo_lumo_window``.
+    active_orbitals:
+        Optional explicit spatial orbital indices selected by
+        ``ActiveSpaceTransformer``.
+    homo_lumo_window:
+        Number of occupied/virtual orbital pairs used to construct a fallback
+        active space when ``active_space`` is not provided. ``0`` keeps the full
+        transformed problem.
+    freeze_core:
+        Whether to apply ``FreezeCoreTransformer`` before active-space
+        selection.
+
+    Returns
+    -------
+    Tuple[FermionicOp, float]
+        Fermionic Hamiltonian and the scalar energy offset containing nuclear
+        repulsion and transformer shifts.
+    """
 
     try:
         # Some qiskit_nature versions expose this keyword.
@@ -75,6 +102,35 @@ def build_electronic_problem(
         homo_lumo_window: int = 2,
         freeze_core: bool = True,
 ) -> ElectronicStructureProblem:
+    """Build and transform a Qiskit Nature electronic-structure problem.
+
+    This function is the canonical entry point for molecular problem setup in
+    the project. It runs PySCF, optionally freezes core orbitals, and then
+    applies an active-space transformation so downstream VQE/FCI code sees a
+    consistent reduced problem.
+
+    Parameters
+    ----------
+    atom_string:
+        PySCF atom specification.
+    basis:
+        Atomic basis set passed to ``PySCFDriver``.
+    active_space:
+        Optional active space ``(n_electrons, n_spatial_orbitals)``.
+    active_orbitals:
+        Optional explicit spatial orbital indices.
+    homo_lumo_window:
+        Fallback active-space window used only when ``active_space`` is not
+        provided.
+    freeze_core:
+        Whether to apply ``FreezeCoreTransformer`` before active-space
+        selection.
+
+    Returns
+    -------
+    ElectronicStructureProblem
+        Transformed electronic problem with Hamiltonian constants preserved.
+    """
 
     try:
         driver = PySCFDriver(atom=atom_string, basis=basis, initial_guess="hcore")
@@ -112,6 +168,31 @@ def build_qubit_hamiltonian(
         problem: Optional[ElectronicStructureProblem] = None,
         num_particles: Optional[Tuple[int, int]] = None,
 ) -> SparsePauliOp:
+    """Map a fermionic Hamiltonian to a qubit Hamiltonian.
+
+    Parameters
+    ----------
+    electronic_hamiltonian:
+        Fermionic Hamiltonian returned by Qiskit Nature.
+    mapper:
+        Mapping strategy. Supported values are ``"jw"`` for Jordan-Wigner,
+        ``"bk"`` for Bravyi-Kitaev, and ``"parity"`` for parity mapping.
+    z2symmetry_reduction:
+        Whether to use Qiskit Nature's tapered mapper. This requires
+        ``problem`` because the symmetry sector is inferred from the electronic
+        structure problem.
+    problem:
+        Electronic problem used to build a tapered mapper when
+        ``z2symmetry_reduction=True``.
+    num_particles:
+        Number of alpha/beta particles used by the parity mapper.
+
+    Returns
+    -------
+    SparsePauliOp
+        Qubit Hamiltonian ready for VQE, FCI reference diagonalization, or
+        Fourier energy sampling.
+    """
 
     if mapper == "jw":
         mapper_obj = JordanWignerMapper()
@@ -173,6 +254,20 @@ def pauli_terms_from_qubit_hamiltonian(
 
 
 def extract_problem_metadat(problem: ElectronicStructureProblem) -> Dict[str, Optional[float | int | Tuple[int, int]]]:
+    """Extract compact metadata from an electronic-structure problem.
+
+    Parameters
+    ----------
+    problem:
+        Qiskit Nature electronic problem.
+
+    Returns
+    -------
+    Dict[str, Optional[float | int | Tuple[int, int]]]
+        Particle count, number of spatial orbitals, and nuclear repulsion
+        energy. The function name keeps its historical spelling for backwards
+        compatibility.
+    """
 
     return {
         "num_particles": problem.num_particles,

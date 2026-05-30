@@ -4,20 +4,21 @@ from typing import Optional, Sequence
 
 import numpy as np
 import pandas as pd
+from matplotlib.axes import Axes
 from matplotlib import pyplot as plt
 
 from src.data.paths import get_fci_cache_dir
 
 
 def plot_error(
-        vqe_energies,
-        fci_energies,
-        kcal=False,
-        chemistry_precision_line=False,
-        distances=np.linspace(0.3, 2.5, 100),
-        molecule_name="H2",
-
-):
+        vqe_energies: Sequence[float],
+        fci_energies: Sequence[float],
+        kcal: bool = False,
+        chemistry_precision_line: bool = False,
+        distances: Sequence[float] = np.linspace(0.3, 2.5, 100),
+        molecule_name: str = "H2",
+) -> None:
+    """Plot absolute VQE-vs-FCI error over a distance grid."""
     vqe_energies = np.array(vqe_energies)
     fci_energies = np.array(fci_energies)
 
@@ -48,13 +49,14 @@ def plot_error(
     plt.show()
 
 def plot_fci(
-        molecule:str,
-    basis:str | Sequence[str],
+        molecule: str,
+        basis: str | Sequence[str],
         data_dir: Optional[Path] = None,
-        normalize=False,
-    latest_only: bool = True,
+        normalize: bool = False,
+        latest_only: bool = True,
         show: bool = True
-):
+) -> Axes:
+    """Plot cached FCI/CASCI dissociation curves for one or more bases."""
 
     basis_list = [basis] if isinstance(basis, str) else list(basis)
     if not basis_list:
@@ -111,3 +113,5 @@ def plot_fci(
 
     if show:
         plt.show()
+
+    return plt.gca()

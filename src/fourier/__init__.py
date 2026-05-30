@@ -1,6 +1,4 @@
 from src.fourier.analysis import (
-    FourierCoefficients,
-    FourierLineResult,
     analyze_fourier_line,
     build_fourier_problem,
     energy_line,
@@ -14,6 +12,11 @@ from src.fourier.analysis import (
     scan_spectral_profile,
     spectral_metrics,
     wrap_pi,
+)
+
+from src.fourier.fourier_dataclasses import (
+    FourierCoefficients,
+    FourierLineResult
 )
 
 __all__ = [

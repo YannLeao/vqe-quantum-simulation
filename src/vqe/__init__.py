@@ -8,10 +8,13 @@ __all__ = [
     "pauli_terms_from_qubit_hamiltonian",
     "run_vqe_grid_search",
     "statevector_grid_systems",
+    "SyntheticNoiseConfig",
+    "build_synthetic_noisy_aer_estimator",
 ]
 
 
 def __getattr__(name: str):
+    """Lazily expose VQE helpers while keeping optional imports lightweight."""
     if name in {
         "MolecularSystem",
         "default_statevector_systems",
@@ -34,10 +37,22 @@ def __getattr__(name: str):
 
         return run_vqe_grid_search
 
-    if name == "IBM_HERON_R2_BACKENDS":
-        from src.vqe.noise import IBM_HERON_R2_BACKENDS
+    if name in {
+        "IBM_HERON_R2_BACKENDS",
+        "SyntheticNoiseConfig",
+        "build_synthetic_noisy_aer_estimator",
+    }:
+        from src.vqe.noise import (
+            IBM_HERON_R2_BACKENDS,
+            SyntheticNoiseConfig,
+            build_synthetic_noisy_aer_estimator,
+        )
 
-        return IBM_HERON_R2_BACKENDS
+        return {
+            "IBM_HERON_R2_BACKENDS": IBM_HERON_R2_BACKENDS,
+            "SyntheticNoiseConfig": SyntheticNoiseConfig,
+            "build_synthetic_noisy_aer_estimator": build_synthetic_noisy_aer_estimator,
+        }[name]
 
     if name in {
         "build_electronic_problem",

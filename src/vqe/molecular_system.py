@@ -6,6 +6,34 @@ GeometryFn = Callable[[float], str]
 
 @dataclass(frozen=True)
 class MolecularSystem:
+    """Configuration for one molecule/basis/distance VQE experiment family.
+
+    Attributes
+    ----------
+    name:
+        Stable molecule identifier used in cache paths and result tables.
+    basis:
+        Atomic basis set passed to PySCF/Qiskit Nature, for example
+        ``"sto-3g"`` or ``"6-31g"``.
+    geometry_fn:
+        Function that receives a distance in Angstrom and returns a PySCF atom
+        string.
+    distances:
+        Internuclear distances, in Angstrom, evaluated by cache/grid-search
+        routines.
+    active_space:
+        Optional active-space specification ``(n_electrons, n_orbitals)``.
+    active_orbitals:
+        Optional explicit spatial orbital indices used by Qiskit Nature's
+        ``ActiveSpaceTransformer``.
+    homo_lumo_window:
+        Fallback active-space window around HOMO/LUMO when ``active_space`` is
+        not provided. ``0`` means use the full transformed problem.
+    freeze_core:
+        Whether to apply Qiskit Nature's freeze-core transformer before active
+        space selection.
+    """
+
     name: str
     basis: str
     geometry_fn: GeometryFn
@@ -17,23 +45,27 @@ class MolecularSystem:
 
 
 def h2_geometry(distance: float | int) -> str:
+    """Return a linear H2 geometry with one bond-length parameter."""
     return f"H 0 0 0; H 0 0 {distance}"
 
 
 def lih_geometry(distance: float | int) -> str:
+    """Return a linear LiH geometry with one bond-length parameter."""
     return f"Li 0 0 0; H 0 0 {distance}"
 
 
 def li2o_linear_geometry(distance: float | int) -> str:
+    """Return a symmetric linear Li-O-Li geometry."""
     return f"Li 0 0 {-distance}; O 0 0 0; Li 0 0 {distance}"
 
 
 def beh2_linear_geometry(distance: float | int) -> str:
+    """Return a symmetric linear H-Be-H geometry."""
     return f"Be 0 0 0; H 0 0 {distance}; H 0 0 {-distance}"
 
 
 def default_statevector_systems() -> list[MolecularSystem]:
-    """Small default systems for a first noiseless VQE grid search."""
+    """Return a small default set for quick noiseless VQE experiments."""
     return [
         MolecularSystem(
             name="H2",
@@ -78,9 +110,14 @@ def statevector_grid_systems(profile: str = "full") -> list[MolecularSystem]:
     Parameters
     ----------
     profile:
-        `pilot` keeps the grid small for smoke tests. `full` uses more
-        distances and basis sets while keeping active spaces modest enough for
-        local StatevectorEstimator runs.
+        ``"pilot"`` keeps the grid small for smoke tests. ``"full"`` uses
+        more distances and basis sets while keeping active spaces modest enough
+        for local ``StatevectorEstimator`` runs.
+
+    Returns
+    -------
+    list[MolecularSystem]
+        Molecular system descriptors consumed by VQE and FCI cache routines.
     """
     profile = profile.lower()
 

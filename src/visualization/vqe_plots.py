@@ -3,6 +3,8 @@ from typing import Iterable, Optional
 
 import numpy as np
 import pandas as pd
+from matplotlib.axes import Axes
+from matplotlib.figure import Figure
 from matplotlib import pyplot as plt
 
 from src.data.paths import get_data_dir
@@ -218,12 +220,14 @@ def chemical_accuracy_config_table(
 
 
 def ensure_figures_dir(path: str | Path = "outputs/figures/slides") -> Path:
+    """Create and return a figure output directory."""
     output_dir = Path(path)
     output_dir.mkdir(parents=True, exist_ok=True)
     return output_dir
 
 
-def save_figure(fig, output_dir: Path, filename: str) -> Path:
+def save_figure(fig: Figure, output_dir: Path, filename: str) -> Path:
+    """Save a Matplotlib figure as a high-resolution slide asset."""
     path = output_dir / filename
     fig.savefig(path, dpi=300, bbox_inches="tight")
     return path
@@ -234,8 +238,8 @@ def plot_dissociation_curve(
     vqe_df: pd.DataFrame,
     molecule: str,
     basis: str,
-    ax=None,
-):
+    ax: Optional[Axes] = None,
+) -> Axes:
     """Plot FCI/CASCI and best VQE energies over distance."""
     ax = ax or plt.subplots(figsize=(8, 5))[1]
     fci = _filter(fci_df, molecule=molecule, basis=basis).sort_values("distance")
@@ -277,8 +281,8 @@ def plot_ansatz_comparison(
     molecule: str,
     basis: str,
     optimizer: Optional[str] = None,
-    ax=None,
-):
+    ax: Optional[Axes] = None,
+) -> Axes:
     """Compare ansatz choices by best error at each distance."""
     ax = ax or plt.subplots(figsize=(8, 5))[1]
     df = _filter(vqe_df, molecule=molecule, basis=basis)
@@ -312,8 +316,8 @@ def plot_optimizer_comparison(
     molecule: str,
     basis: str,
     ansatz: str,
-    ax=None,
-):
+    ax: Optional[Axes] = None,
+) -> Axes:
     """Compare optimizers for a fixed molecule, basis, and ansatz."""
     ax = ax or plt.subplots(figsize=(8, 5))[1]
     df = _filter(vqe_df, molecule=molecule, basis=basis)
@@ -340,7 +344,7 @@ def plot_optimizer_comparison(
     return ax
 
 
-def plot_chemical_accuracy_rate(vqe_df: pd.DataFrame, ax=None):
+def plot_chemical_accuracy_rate(vqe_df: pd.DataFrame, ax: Optional[Axes] = None) -> Axes:
     """Plot chemical accuracy rate by molecule and basis."""
     ax = ax or plt.subplots(figsize=(8, 5))[1]
     best = best_vqe_by_point(vqe_df)
@@ -368,7 +372,7 @@ def plot_chemical_accuracy_rate(vqe_df: pd.DataFrame, ax=None):
     return ax
 
 
-def plot_runtime_by_configuration(vqe_df: pd.DataFrame, ax=None):
+def plot_runtime_by_configuration(vqe_df: pd.DataFrame, ax: Optional[Axes] = None) -> Axes:
     """Plot mean runtime by ansatz and optimizer."""
     ax = ax or plt.subplots(figsize=(8, 5))[1]
     df = vqe_df[vqe_df["success"].astype(bool)].copy()

@@ -8,7 +8,7 @@ def compute_fci_energy(
         atom_string: str,
         basis: str = "sto-3g",
         active_space: Optional[Tuple[int, int]] = None,
-    active_orbitals: Optional[Sequence[int]] = None,
+        active_orbitals: Optional[Sequence[int]] = None,
         homo_lumo_window: int = 2,
         freeze_core: int = 0
 ) -> float:
@@ -23,6 +23,7 @@ def compute_fci_energy(
         Basis set
     active_space : (n_electrons, n_orbitals) or None
         Manual CAS definition
+    active_orbitals : (n_electrons, n_orbitals) or None
     homo_lumo_window : int
         Number of orbitals around HOMO/LUMO if CAS is automatic
     freeze_core : bool

@@ -41,13 +41,56 @@ def cache_fci(
         distances: np.ndarray,
         basis: str = "sto-3g",
         active_space: Optional[Tuple[int, int]] = None,
-    active_orbitals: Optional[Sequence[int]] = None,
+        active_orbitals: Optional[Sequence[int]] = None,
         homo_lumo_window: int = 2,
         freeze_core: int = 0,
         data_dir: Optional[Path] = None,
         overwrite: bool = False,
         verbose: bool = True,
-):
+) -> np.ndarray:
+    """Compute and cache FCI/CASCI reference energies for a distance grid.
+
+    Results are stored under ``data/<molecule>/<basis>/`` as a CSV/JSON pair.
+    The filename is derived from the molecule, basis, active-space settings,
+    and freeze-core configuration, so the same calculation can be reused by
+    notebooks and grid-search routines.
+
+    Parameters
+    ----------
+    molecule:
+        Stable molecule identifier used in cache paths.
+    geometry_fn:
+        Function that converts a distance in Angstrom into a PySCF atom string.
+    distances:
+        Distances, in Angstrom, for which reference energies should be loaded
+        from cache or computed.
+    basis:
+        Atomic basis set passed to PySCF/Qiskit Nature.
+    active_space:
+        Optional active-space specification ``(n_electrons, n_orbitals)``. If
+        set, the reference is CASCI in that active space rather than full FCI.
+    active_orbitals:
+        Optional explicit spatial orbital indices used by the active-space
+        transformer.
+    homo_lumo_window:
+        Fallback active-space window used by ``compute_fci_energy`` when
+        ``active_space`` is not provided.
+    freeze_core:
+        Whether to freeze core orbitals before active-space selection. Kept as
+        ``int`` for compatibility with older cache metadata.
+    data_dir:
+        Optional data root override.
+    overwrite:
+        When ``True``, recompute the whole grid and replace the existing cache.
+    verbose:
+        Whether to print progress information.
+
+    Returns
+    -------
+    np.ndarray
+        Energies aligned with ``distances``. Failed points are returned as
+        ``np.nan`` so downstream notebooks can continue.
+    """
     # --- Setup paths ---
     path = get_fci_cache_dir(molecule, basis, data_dir=data_dir, create=True)
 

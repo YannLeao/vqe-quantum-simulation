@@ -1,6 +1,9 @@
 from pathlib import Path
+from typing import Any, Optional
 
 import pandas as pd
+from matplotlib.axes import Axes
+from matplotlib.figure import Figure
 from matplotlib import pyplot as plt
 
 from src.fourier.analysis import FourierLineResult, fourier_reconstruct
@@ -9,9 +12,25 @@ from src.fourier.analysis import FourierLineResult, fourier_reconstruct
 def plot_fourier_reconstruction(
     line: FourierLineResult,
     harmonic_orders: tuple[int, ...] = (1, 2, 3),
-    ax=None,
-):
-    """Plot sampled E(theta) and truncated Fourier reconstructions."""
+    ax: Optional[Axes] = None,
+) -> Axes:
+    """Plot sampled energy and truncated Fourier reconstructions.
+
+    Parameters
+    ----------
+    line:
+        Sampled Fourier line returned by
+        :func:`src.fourier.analysis.analyze_fourier_line`.
+    harmonic_orders:
+        Fourier truncation orders displayed together with the sampled energy.
+    ax:
+        Optional Matplotlib axes. A new axes is created when omitted.
+
+    Returns
+    -------
+    Axes
+        Axes containing the plot.
+    """
     ax = ax or plt.subplots(figsize=(8, 5))[1]
     ax.plot(line.theta_grid, line.energy, color="#111111", linewidth=2.4, label="E(theta)")
 
@@ -34,8 +53,23 @@ def plot_fourier_reconstruction(
     return ax
 
 
-def plot_harmonic_profile(profile_df: pd.DataFrame, ax=None):
-    """Plot mean normalized Fourier amplitude by harmonic index."""
+def plot_harmonic_profile(profile_df: pd.DataFrame, ax: Optional[Axes] = None) -> Axes:
+    """Plot mean normalized Fourier amplitude by harmonic index.
+
+    Parameters
+    ----------
+    profile_df:
+        DataFrame returned as the second output of
+        :func:`src.fourier.analysis.scan_spectral_profile`. Required columns
+        are ``molecule``, ``regime``, ``k``, and ``normalized_amplitude``.
+    ax:
+        Optional Matplotlib axes. A new axes is created when omitted.
+
+    Returns
+    -------
+    Axes
+        Axes containing the plot.
+    """
     ax = ax or plt.subplots(figsize=(8, 5))[1]
     summary = (
         profile_df.groupby(["molecule", "regime", "k"], as_index=False)
@@ -63,8 +97,24 @@ def plot_harmonic_profile(profile_df: pd.DataFrame, ax=None):
     return ax
 
 
-def plot_spectral_metrics(metric_df: pd.DataFrame, ax=None):
-    """Plot R1 and normalized entropy against distance."""
+def plot_spectral_metrics(metric_df: pd.DataFrame, ax: Any = None) -> Any:
+    """Plot first-harmonic concentration and spectral entropy by distance.
+
+    Parameters
+    ----------
+    metric_df:
+        DataFrame returned as the first output of
+        :func:`src.fourier.analysis.scan_spectral_profile`. Required columns
+        are ``molecule``, ``distance``, ``regime``, ``r1``, and ``h_norm``.
+    ax:
+        Optional two-element axes array. If omitted, a new ``1x2`` subplot
+        layout is created.
+
+    Returns
+    -------
+    Any
+        The axes array used for plotting.
+    """
     if ax is None:
         _, ax = plt.subplots(1, 2, figsize=(12, 4))
 
@@ -98,8 +148,24 @@ def plot_spectral_metrics(metric_df: pd.DataFrame, ax=None):
     return ax
 
 
-def plot_harmonic_error(error_df: pd.DataFrame, ax=None):
-    """Plot reconstruction error as a function of Fourier order K."""
+def plot_harmonic_error(error_df: pd.DataFrame, ax: Any = None) -> Any:
+    """Plot reconstruction and minimum-location error by harmonic order.
+
+    Parameters
+    ----------
+    error_df:
+        DataFrame returned by :func:`src.fourier.analysis.scan_harmonic_error`.
+        Required columns are ``molecule``, ``K``, ``rmse``, and
+        ``delta_min_energy``.
+    ax:
+        Optional two-element axes array. If omitted, a new ``1x2`` subplot
+        layout is created.
+
+    Returns
+    -------
+    Any
+        The axes array used for plotting.
+    """
     if ax is None:
         _, ax = plt.subplots(1, 2, figsize=(12, 4))
 
@@ -131,8 +197,24 @@ def plot_harmonic_error(error_df: pd.DataFrame, ax=None):
     return ax
 
 
-def plot_budget_comparison(comparison_df: pd.DataFrame, ax=None):
-    """Plot Fourier-guided gain across optimizer budgets."""
+def plot_budget_comparison(comparison_df: pd.DataFrame, ax: Any = None) -> Any:
+    """Plot Fourier-guided error reduction and evaluation-cost difference.
+
+    Parameters
+    ----------
+    comparison_df:
+        DataFrame returned by :func:`src.fourier.analysis.run_budget_comparison`.
+        Required columns include ``max_iter``, ``molecule``, ``mode``,
+        ``total_cost``, and ``abs_error``.
+    ax:
+        Optional two-element axes array. If omitted, a new ``1x2`` subplot
+        layout is created.
+
+    Returns
+    -------
+    Any
+        The axes array used for plotting.
+    """
     if ax is None:
         _, ax = plt.subplots(1, 2, figsize=(12, 4))
 
@@ -182,7 +264,23 @@ def plot_budget_comparison(comparison_df: pd.DataFrame, ax=None):
     return ax
 
 
-def save_figure(fig, output_dir: str | Path, filename: str) -> Path:
+def save_figure(fig: Figure, output_dir: str | Path, filename: str) -> Path:
+    """Save a Matplotlib figure with project-standard export options.
+
+    Parameters
+    ----------
+    fig:
+        Matplotlib figure to save.
+    output_dir:
+        Directory where the figure will be written. It is created when needed.
+    filename:
+        Output filename, including extension.
+
+    Returns
+    -------
+    Path
+        Path to the saved file.
+    """
     path = Path(output_dir)
     path.mkdir(parents=True, exist_ok=True)
     target = path / filename
@@ -190,7 +288,8 @@ def save_figure(fig, output_dir: str | Path, filename: str) -> Path:
     return target
 
 
-def _set_log_scale_when_positive(ax, values: pd.Series):
+def _set_log_scale_when_positive(ax: Axes, values: pd.Series) -> None:
+    """Use log scale only when a plotted series contains positive values."""
     positive_values = pd.to_numeric(values, errors="coerce")
     positive_values = positive_values[positive_values > 0]
     if len(positive_values) > 0:
