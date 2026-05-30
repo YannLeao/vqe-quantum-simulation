@@ -57,7 +57,7 @@ paired JSON metadata file describing the experiment configuration that produced
 them. Future refactors should preserve this metadata-first idea and avoid relying
 only on long file names to understand a dataset.
 
-See [DATA.md](DATA.md) for the cache layout and the path helpers notebooks should
+See [data/README.md](data/README.md) for the cache layout and the path helpers notebooks should
 use when reading or writing reusable data.
 
 ## Research Reports
