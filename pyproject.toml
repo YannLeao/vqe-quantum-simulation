@@ -7,7 +7,7 @@ name = "vqe-quantum-simulation"
 version = "0.1.0"
 description = "VQE and FCI simulation utilities"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 dependencies = [
     "matplotlib",
     "numpy",
@@ -20,7 +20,7 @@ dependencies = [
     "qiskit-algorithms",
     "qiskit-ibm-runtime",
     "qiskit-nature",
-    "scipy",
+    "scipy"
 ]
 
 [project.optional-dependencies]

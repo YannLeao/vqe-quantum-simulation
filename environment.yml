@@ -12,5 +12,8 @@ dependencies:
   - qiskit-algorithms
   - qiskit-nature
   - pip
+  - qiskit-aer
+  - qiskit-ibm-runtime
+  - python-dotenv
   - pip:
       - -e .[dev]
