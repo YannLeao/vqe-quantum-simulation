@@ -16,7 +16,7 @@ def _build_cache_config(
         molecule: str,
         basis: str,
         active_space: Optional[Tuple[int, int]],
-    active_orbitals: Optional[Tuple[int, ...]],
+        active_orbitals: Optional[Tuple[int, ...]],
         homo_lumo_window: int,
         freeze_core: int,
 ) -> dict:
@@ -24,7 +24,7 @@ def _build_cache_config(
         "molecule": molecule,
         "basis": basis,
         "active_space": active_space,
-    "active_orbitals": active_orbitals,
+        "active_orbitals": active_orbitals,
         "homo_lumo_window": homo_lumo_window,
         "freeze_core": freeze_core,
     }
@@ -164,7 +164,7 @@ def cache_fci(
             if cached_value is not None:
                 results.append(cached_value)
                 if verbose:
-                    print(f"[{i+1}/{len(distances)}] d={d:.4f} (cached)")
+                    print(f"[{i + 1}/{len(distances)}] d={d:.4f} (cached)")
                 continue
 
             # --- Compute ---

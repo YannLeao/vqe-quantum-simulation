@@ -5,7 +5,7 @@ import numpy as np
 from qiskit.primitives import BaseEstimatorV2
 
 from src.vqe.ansatz import build_ansatz
-from src.vqe.hamiltonian import build_qubit_hamiltonian, build_electronic_problem
+from src.vqe.hamiltonian import build_qubit_hamiltonian, build_electronic_problem, electronic_constant_energy
 from src.vqe.optimizer import get_optimizer
 from src.vqe.vqe_runner import run_vqe
 
@@ -60,9 +60,7 @@ def run_experiment(
         freeze_core=config.get("freeze_core", 0)
     )
     fermionic_op = problem.hamiltonian.second_q_op()
-    constant_energy = float(
-        sum(float(np.real(v)) for v in problem.hamiltonian.constants.values())
-    )
+    constant_energy = electronic_constant_energy(problem)
     qubit_op = build_qubit_hamiltonian(
         fermionic_op,
         mapper=config.get("mapper", "jw"),

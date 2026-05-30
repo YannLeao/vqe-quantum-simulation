@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from typing import Any, Iterable, Optional
 
 import numpy as np
@@ -14,10 +15,22 @@ from src.vqe.ansatz import build_ansatz, decompose_for_estimator
 from src.vqe.hamiltonian import (
     build_electronic_problem,
     build_qubit_hamiltonian,
+    electronic_constant_energy,
 )
 from src.vqe.molecular_system import MolecularSystem
 from src.vqe.optimizer import get_optimizer
 from src.vqe.vqe_runner import run_vqe
+
+
+@dataclass(frozen=True)
+class FourierReferenceContext:
+    """Reusable state for local Fourier scans at one molecular point."""
+
+    problem: ElectronicStructureProblem
+    qubit_op: SparsePauliOp
+    constant_energy: float
+    ansatz: QuantumCircuit
+    center: np.ndarray
 
 
 def wrap_pi(x: np.ndarray) -> np.ndarray:
@@ -76,9 +89,7 @@ def build_fourier_problem(
         freeze_core=system.freeze_core,
     )
     fermionic_op = problem.hamiltonian.second_q_op()
-    constant_energy = float(
-        sum(float(np.real(v)) for v in problem.hamiltonian.constants.values())
-    )
+    constant_energy = electronic_constant_energy(problem)
     qubit_op = build_qubit_hamiltonian(
         fermionic_op,
         mapper=mapper,
@@ -413,6 +424,55 @@ def estimate_first_harmonic_guided_point(
     }
 
 
+def _build_reference_context(
+    system: MolecularSystem,
+    distance: float,
+    ansatz_name: str,
+    reps: int,
+    mapper: str,
+    z2symmetry_reduction: bool,
+    optimizer_name: str,
+    max_iter: int,
+    seed: int,
+    estimator: Optional[BaseEstimatorV2],
+) -> Optional[FourierReferenceContext]:
+    problem, qubit_op, constant_energy = build_fourier_problem(
+        system,
+        float(distance),
+        mapper=mapper,
+        z2symmetry_reduction=z2symmetry_reduction,
+    )
+    ansatz = build_ansatz(
+        name=ansatz_name,
+        num_qubits=qubit_op.num_qubits,
+        reps=reps,
+        num_particles=problem.num_particles,
+        num_spatial_orbitals=problem.num_spatial_orbitals,
+    )
+    if ansatz.num_parameters == 0:
+        return None
+
+    vqe_result = run_vqe_reference_point(
+        qubit_op=qubit_op,
+        ansatz=ansatz,
+        constant_energy=constant_energy,
+        optimizer_name=optimizer_name,
+        max_iter=max_iter,
+        seed=seed,
+        estimator=estimator,
+    )
+    if not vqe_result.get("success", False):
+        return None
+
+    return FourierReferenceContext(
+        problem=problem,
+        qubit_op=qubit_op,
+        constant_energy=constant_energy,
+        ansatz=ansatz,
+        center=np.asarray(vqe_result["optimal_params"], dtype=float),
+    )
+
+
 def scan_spectral_profile(
     systems: list[MolecularSystem],
     ansatz_name: str = "real_amplitudes",
@@ -474,47 +534,37 @@ def scan_spectral_profile(
 
     for system in systems:
         for distance in system.distances:
-            problem, qubit_op, constant_energy = build_fourier_problem(
-                system,
-                float(distance),
+            context = _build_reference_context(
+                system=system,
+                distance=float(distance),
+                ansatz_name=ansatz_name,
+                reps=reps,
                 mapper=mapper,
                 z2symmetry_reduction=z2symmetry_reduction,
-            )
-            ansatz = build_ansatz(
-                name=ansatz_name,
-                num_qubits=qubit_op.num_qubits,
-                reps=reps,
-                num_particles=problem.num_particles,
-                num_spatial_orbitals=problem.num_spatial_orbitals,
-            )
-            if ansatz.num_parameters == 0:
-                continue
-
-            vqe_result = run_vqe_reference_point(
-                qubit_op=qubit_op,
-                ansatz=ansatz,
-                constant_energy=constant_energy,
                 optimizer_name=optimizer_name,
                 max_iter=max_iter,
                 seed=seed,
                 estimator=estimator,
             )
-            if not vqe_result.get("success", False):
+            if context is None:
                 continue
 
-            center = np.asarray(vqe_result["optimal_params"], dtype=float)
-            directions = [("local", make_coordinate_direction(ansatz.num_parameters, 0))]
+            directions = [("local", make_coordinate_direction(context.ansatz.num_parameters, 0))]
             for _ in range(global_samples):
-                direction = rng.normal(size=ansatz.num_parameters)
+                direction = rng.normal(size=context.ansatz.num_parameters)
                 direction = direction / (np.linalg.norm(direction) + 1e-12)
                 directions.append(("global", direction))
 
             for regime, direction in directions:
                 line = analyze_fourier_line(
-                    ansatz=ansatz,
-                    qubit_op=qubit_op,
-                    constant_energy=constant_energy,
-                    center=center if regime == "local" else rng.uniform(-np.pi, np.pi, ansatz.num_parameters),
+                    ansatz=context.ansatz,
+                    qubit_op=context.qubit_op,
+                    constant_energy=context.constant_energy,
+                    center=(
+                        context.center
+                        if regime == "local"
+                        else rng.uniform(-np.pi, np.pi, context.ansatz.num_parameters)
+                    ),
                     direction=direction,
                     theta_samples=theta_samples,
                     estimator=estimator,
@@ -594,41 +644,27 @@ def scan_harmonic_error(
 
     for system in systems:
         for distance in system.distances:
-            problem, qubit_op, constant_energy = build_fourier_problem(
-                system,
-                float(distance),
+            context = _build_reference_context(
+                system=system,
+                distance=float(distance),
+                ansatz_name=ansatz_name,
+                reps=reps,
                 mapper=mapper,
                 z2symmetry_reduction=z2symmetry_reduction,
-            )
-            ansatz = build_ansatz(
-                name=ansatz_name,
-                num_qubits=qubit_op.num_qubits,
-                reps=reps,
-                num_particles=problem.num_particles,
-                num_spatial_orbitals=problem.num_spatial_orbitals,
-            )
-            if ansatz.num_parameters == 0:
-                continue
-
-            vqe_result = run_vqe_reference_point(
-                qubit_op=qubit_op,
-                ansatz=ansatz,
-                constant_energy=constant_energy,
                 optimizer_name=optimizer_name,
                 max_iter=max_iter,
                 seed=seed,
                 estimator=estimator,
             )
-            if not vqe_result.get("success", False):
+            if context is None:
                 continue
 
-            center = np.asarray(vqe_result["optimal_params"], dtype=float)
-            direction = make_coordinate_direction(ansatz.num_parameters, 0)
+            direction = make_coordinate_direction(context.ansatz.num_parameters, 0)
             line = analyze_fourier_line(
-                ansatz=ansatz,
-                qubit_op=qubit_op,
-                constant_energy=constant_energy,
-                center=center,
+                ansatz=context.ansatz,
+                qubit_op=context.qubit_op,
+                constant_energy=context.constant_energy,
+                center=context.center,
                 direction=direction,
                 theta_samples=theta_samples,
                 estimator=estimator,

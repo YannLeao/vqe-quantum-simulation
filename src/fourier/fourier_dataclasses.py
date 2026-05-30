@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 
+import numpy as np
+
 @dataclass(frozen=True)
 class FourierCoefficients:
     """Real Fourier coefficients fitted from an equally spaced energy line.
