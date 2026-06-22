@@ -1,0 +1,177 @@
+{
+  "run_label": "dense_curve_config_search_sto3g",
+  "molecule": "BeH2",
+  "basis": "sto-3g",
+  "distances": [
+    0.5,
+    0.9615384615384616,
+    1.2563131313131315,
+    1.508838383838384,
+    1.7769230769230768,
+    2.171717171717172,
+    2.613636363636364,
+    3.181818181818182,
+    3.75
+  ],
+  "active_space": [
+    4,
+    4
+  ],
+  "active_orbitals": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "homo_lumo_window": 0,
+  "freeze_core": true,
+  "configs": [
+    {
+      "mapper": "jw",
+      "ansatz": "real_amplitudes",
+      "reps": 1,
+      "optimizer": "cobyla",
+      "max_iter": 100,
+      "seed": 137
+    },
+    {
+      "mapper": "jw",
+      "ansatz": "real_amplitudes",
+      "reps": 1,
+      "optimizer": "slsqp",
+      "max_iter": 100,
+      "seed": 137
+    },
+    {
+      "mapper": "jw",
+      "ansatz": "real_amplitudes",
+      "reps": 1,
+      "optimizer": "spsa",
+      "max_iter": 100,
+      "seed": 137
+    },
+    {
+      "mapper": "jw",
+      "ansatz": "real_amplitudes",
+      "reps": 2,
+      "optimizer": "cobyla",
+      "max_iter": 100,
+      "seed": 137
+    },
+    {
+      "mapper": "jw",
+      "ansatz": "real_amplitudes",
+      "reps": 2,
+      "optimizer": "slsqp",
+      "max_iter": 100,
+      "seed": 137
+    },
+    {
+      "mapper": "jw",
+      "ansatz": "real_amplitudes",
+      "reps": 2,
+      "optimizer": "spsa",
+      "max_iter": 100,
+      "seed": 137
+    },
+    {
+      "mapper": "jw",
+      "ansatz": "efficient_su2",
+      "reps": 1,
+      "optimizer": "cobyla",
+      "max_iter": 100,
+      "seed": 137
+    },
+    {
+      "mapper": "jw",
+      "ansatz": "efficient_su2",
+      "reps": 1,
+      "optimizer": "slsqp",
+      "max_iter": 100,
+      "seed": 137
+    },
+    {
+      "mapper": "jw",
+      "ansatz": "efficient_su2",
+      "reps": 1,
+      "optimizer": "spsa",
+      "max_iter": 100,
+      "seed": 137
+    },
+    {
+      "mapper": "jw",
+      "ansatz": "efficient_su2",
+      "reps": 2,
+      "optimizer": "cobyla",
+      "max_iter": 100,
+      "seed": 137
+    },
+    {
+      "mapper": "jw",
+      "ansatz": "efficient_su2",
+      "reps": 2,
+      "optimizer": "slsqp",
+      "max_iter": 100,
+      "seed": 137
+    },
+    {
+      "mapper": "jw",
+      "ansatz": "efficient_su2",
+      "reps": 2,
+      "optimizer": "spsa",
+      "max_iter": 100,
+      "seed": 137
+    },
+    {
+      "mapper": "jw",
+      "ansatz": "uccsd",
+      "reps": 1,
+      "optimizer": "cobyla",
+      "max_iter": 100,
+      "seed": 137
+    },
+    {
+      "mapper": "jw",
+      "ansatz": "uccsd",
+      "reps": 1,
+      "optimizer": "slsqp",
+      "max_iter": 100,
+      "seed": 137
+    },
+    {
+      "mapper": "jw",
+      "ansatz": "uccsd",
+      "reps": 1,
+      "optimizer": "spsa",
+      "max_iter": 100,
+      "seed": 137
+    },
+    {
+      "mapper": "jw",
+      "ansatz": "puccsd",
+      "reps": 1,
+      "optimizer": "cobyla",
+      "max_iter": 100,
+      "seed": 137
+    },
+    {
+      "mapper": "jw",
+      "ansatz": "puccsd",
+      "reps": 1,
+      "optimizer": "slsqp",
+      "max_iter": 100,
+      "seed": 137
+    },
+    {
+      "mapper": "jw",
+      "ansatz": "puccsd",
+      "reps": 1,
+      "optimizer": "spsa",
+      "max_iter": 100,
+      "seed": 137
+    }
+  ],
+  "created_at": 1780602507.4404938,
+  "elapsed_s": 5574.0044018909975,
+  "csv": "/mnt/c/Users/yannk/PycharmProjects/vqe-quantum-simulation/data/BeH2/sto-3g/vqe_cache/vqe_dense_curve_config_search_sto3g_16e936ac1154.csv"
+}

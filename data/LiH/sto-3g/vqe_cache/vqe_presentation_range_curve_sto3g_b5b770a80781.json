@@ -1,0 +1,39 @@
+{
+  "run_label": "presentation_range_curve_sto3g",
+  "molecule": "LiH",
+  "basis": "sto-3g",
+  "distances": [
+    0.8125,
+    1.2228535353535357,
+    1.6332070707070707,
+    2.125631313131313,
+    2.5359848484848486,
+    3.028409090909091,
+    3.47979797979798,
+    3.9722222222222223,
+    4.423611111111111,
+    4.875
+  ],
+  "config": {
+    "mapper": "jw",
+    "ansatz": "puccsd",
+    "reps": 1,
+    "optimizer": "slsqp",
+    "max_iter": 100,
+    "seed": 137
+  },
+  "active_space": [
+    2,
+    3
+  ],
+  "active_orbitals": [
+    0,
+    1,
+    2
+  ],
+  "homo_lumo_window": 0,
+  "freeze_core": true,
+  "created_at": 1780604691.5985327,
+  "elapsed_s": 29.3386718499969,
+  "csv": "/mnt/c/Users/yannk/PycharmProjects/vqe-quantum-simulation/data/LiH/sto-3g/vqe_cache/vqe_presentation_range_curve_sto3g_b5b770a80781.csv"
+}

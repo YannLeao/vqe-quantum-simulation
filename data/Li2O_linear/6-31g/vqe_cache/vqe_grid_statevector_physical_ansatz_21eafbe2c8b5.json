@@ -1,0 +1,58 @@
+{
+  "system": {
+    "name": "Li2O_linear",
+    "basis": "6-31g",
+    "distances": [
+      1.2,
+      1.5,
+      1.8,
+      2.1,
+      2.4,
+      2.8,
+      3.2
+    ],
+    "active_space": [
+      4,
+      4
+    ],
+    "active_orbitals": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "homo_lumo_window": 0,
+    "freeze_core": true
+  },
+  "parameter_grid": {
+    "mapper": [
+      "jw"
+    ],
+    "ansatz": [
+      "uccsd",
+      "puccsd"
+    ],
+    "reps": [
+      1
+    ],
+    "optimizer": [
+      "cobyla"
+    ],
+    "max_iter": [
+      100
+    ],
+    "seed": [
+      137
+    ]
+  },
+  "estimator": "StatevectorEstimator",
+  "run_label": "statevector_physical_ansatz",
+  "run_metadata": {
+    "purpose": "li2o_ansatz_comparison_patch",
+    "presentation_patch": true
+  },
+  "include_fci_reference": true,
+  "chemical_accuracy_kcal_mol": 1.0,
+  "created_at": 1780600845.574346,
+  "csv": "/mnt/c/Users/yannk/PycharmProjects/vqe-quantum-simulation/data/Li2O_linear/6-31g/vqe_cache/vqe_grid_statevector_physical_ansatz_21eafbe2c8b5.csv"
+}

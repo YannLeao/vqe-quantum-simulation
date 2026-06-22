@@ -7,6 +7,7 @@ from matplotlib.figure import Figure
 from matplotlib import pyplot as plt
 
 from src.fourier.analysis import FourierLineResult, fourier_reconstruct
+from src.visualization.style import BRAND_BURGUNDY, CONTRAST_COLORS, set_presentation_style, style_axis
 
 
 def plot_fourier_reconstruction(
@@ -31,8 +32,9 @@ def plot_fourier_reconstruction(
     Axes
         Axes containing the plot.
     """
+    set_presentation_style()
     ax = ax or plt.subplots(figsize=(8, 5))[1]
-    ax.plot(line.theta_grid, line.energy, color="#111111", linewidth=2.4, label="E(theta)")
+    ax.plot(line.theta_grid, line.energy, color=BRAND_BURGUNDY, linewidth=2.4, label="E(theta)")
 
     markers = ["--", "-.", ":"]
     for i, order in enumerate(harmonic_orders):
@@ -41,14 +43,12 @@ def plot_fourier_reconstruction(
             line.theta_grid,
             reconstruction,
             markers[i % len(markers)],
+            color=CONTRAST_COLORS[(i + 1) % len(CONTRAST_COLORS)],
             linewidth=2,
             label=f"Fourier K={order}",
         )
 
-    ax.set_title("Reconstrução de Fourier da paisagem VQE")
-    ax.set_xlabel("theta")
-    ax.set_ylabel("Energia (Hartree)")
-    ax.grid(alpha=0.25)
+    style_axis(ax, "Reconstrução de Fourier da paisagem VQE", "theta", "Energia (Hartree)")
     ax.legend()
     return ax
 
@@ -70,6 +70,7 @@ def plot_harmonic_profile(profile_df: pd.DataFrame, ax: Optional[Axes] = None) -
     Axes
         Axes containing the plot.
     """
+    set_presentation_style()
     ax = ax or plt.subplots(figsize=(8, 5))[1]
     summary = (
         profile_df.groupby(["molecule", "regime", "k"], as_index=False)
@@ -77,12 +78,13 @@ def plot_harmonic_profile(profile_df: pd.DataFrame, ax: Optional[Axes] = None) -
         .sort_values(["molecule", "regime", "k"])
     )
 
-    for (molecule, regime), group in summary.groupby(["molecule", "regime"]):
+    for i, ((molecule, regime), group) in enumerate(summary.groupby(["molecule", "regime"])):
         linestyle = "-" if regime == "local" else "--"
         marker = "o" if regime == "local" else "s"
         ax.plot(
             group["k"],
             group["mean_amplitude"],
+            color=CONTRAST_COLORS[i % len(CONTRAST_COLORS)],
             linestyle=linestyle,
             marker=marker,
             linewidth=2,
@@ -115,6 +117,7 @@ def plot_spectral_metrics(metric_df: pd.DataFrame, ax: Any = None) -> Any:
     Any
         The axes array used for plotting.
     """
+    set_presentation_style()
     if ax is None:
         _, ax = plt.subplots(1, 2, figsize=(12, 4))
 
@@ -127,12 +130,13 @@ def plot_spectral_metrics(metric_df: pd.DataFrame, ax: Any = None) -> Any:
             .agg(value=(metric, "mean"))
             .sort_values(["molecule", "regime", "distance"])
         )
-        for (molecule, regime), group in summary.groupby(["molecule", "regime"]):
+        for i, ((molecule, regime), group) in enumerate(summary.groupby(["molecule", "regime"])):
             linestyle = "-" if regime == "local" else "--"
             marker = "o" if regime == "local" else "s"
             axis.plot(
                 group["distance"],
                 group["value"],
+                color=CONTRAST_COLORS[i % len(CONTRAST_COLORS)],
                 linestyle=linestyle,
                 marker=marker,
                 linewidth=2,
@@ -166,6 +170,7 @@ def plot_harmonic_error(error_df: pd.DataFrame, ax: Any = None) -> Any:
     Any
         The axes array used for plotting.
     """
+    set_presentation_style()
     if ax is None:
         _, ax = plt.subplots(1, 2, figsize=(12, 4))
 
@@ -178,9 +183,10 @@ def plot_harmonic_error(error_df: pd.DataFrame, ax: Any = None) -> Any:
         .sort_values(["molecule", "K"])
     )
 
-    for molecule, group in summary.groupby("molecule"):
-        ax[0].plot(group["K"], group["mean_rmse"], marker="o", linewidth=2, label=molecule)
-        ax[1].plot(group["K"], group["mean_delta_min"], marker="o", linewidth=2, label=molecule)
+    for i, (molecule, group) in enumerate(summary.groupby("molecule")):
+        color = CONTRAST_COLORS[i % len(CONTRAST_COLORS)]
+        ax[0].plot(group["K"], group["mean_rmse"], color=color, marker="o", linewidth=2, label=molecule)
+        ax[1].plot(group["K"], group["mean_delta_min"], color=color, marker="o", linewidth=2, label=molecule)
 
     ax[0].set_title("Erro de reconstrução vs K")
     ax[0].set_xlabel("Ordem harmônica K")
@@ -215,6 +221,7 @@ def plot_budget_comparison(comparison_df: pd.DataFrame, ax: Any = None) -> Any:
     Any
         The axes array used for plotting.
     """
+    set_presentation_style()
     if ax is None:
         _, ax = plt.subplots(1, 2, figsize=(12, 4))
 
@@ -244,18 +251,19 @@ def plot_budget_comparison(comparison_df: pd.DataFrame, ax: Any = None) -> Any:
     )
     wide["cost_delta"] = wide["cost_guided"] - wide["cost_random"]
 
-    for molecule, group in wide.groupby("molecule"):
+    for i, (molecule, group) in enumerate(wide.groupby("molecule")):
+        color = CONTRAST_COLORS[i % len(CONTRAST_COLORS)]
         group = group.sort_values("max_iter")
-        ax[0].plot(group["max_iter"], group["relative_error_reduction"], marker="o", linewidth=2, label=molecule)
-        ax[1].plot(group["max_iter"], group["cost_delta"], marker="o", linewidth=2, label=molecule)
+        ax[0].plot(group["max_iter"], group["relative_error_reduction"], color=color, marker="o", linewidth=2, label=molecule)
+        ax[1].plot(group["max_iter"], group["cost_delta"], color=color, marker="o", linewidth=2, label=molecule)
 
-    ax[0].axhline(0.0, color="#444444", linewidth=1, alpha=0.5)
+    ax[0].axhline(0.0, color=BRAND_BURGUNDY, linewidth=1, alpha=0.5)
     ax[0].set_title("Ganho de erro vs orçamento")
     ax[0].set_xlabel("Máximo de iterações")
     ax[0].set_ylabel("1 - erro_guiado / erro_padrão")
     ax[0].grid(alpha=0.25)
 
-    ax[1].axhline(0.0, color="#444444", linewidth=1, alpha=0.5)
+    ax[1].axhline(0.0, color=BRAND_BURGUNDY, linewidth=1, alpha=0.5)
     ax[1].set_title("Custo guiado - custo padrão")
     ax[1].set_xlabel("Máximo de iterações")
     ax[1].set_ylabel("Delta de avaliações")

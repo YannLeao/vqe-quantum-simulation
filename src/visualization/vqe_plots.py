@@ -8,6 +8,7 @@ from matplotlib.figure import Figure
 from matplotlib import pyplot as plt
 
 from src.data.paths import get_data_dir
+from src.visualization.style import BRAND_BURGUNDY, CONTRAST_COLORS, set_presentation_style, style_axis
 
 CHEMICAL_ACCURACY_KCAL_MOL = 1.0
 
@@ -241,6 +242,7 @@ def plot_dissociation_curve(
     ax: Optional[Axes] = None,
 ) -> Axes:
     """Plot FCI/CASCI and best VQE energies over distance."""
+    set_presentation_style()
     ax = ax or plt.subplots(figsize=(8, 5))[1]
     fci = _filter(fci_df, molecule=molecule, basis=basis).sort_values("distance")
     best = best_vqe_by_point(_filter(vqe_df, molecule=molecule, basis=basis))
@@ -250,7 +252,7 @@ def plot_dissociation_curve(
         ax.plot(
             fci["distance"],
             fci["energy"],
-            color="#F0E442",
+            color=BRAND_BURGUNDY,
             linestyle="--",
             linewidth=2.5,
             label=f"{method}",
@@ -260,7 +262,7 @@ def plot_dissociation_curve(
         ax.plot(
             best["distance"],
             best["energy"],
-            color="#0072B2",
+            color=CONTRAST_COLORS[1],
             marker="s",
             linewidth=2,
             label="VQE - Grid Search",
@@ -284,6 +286,7 @@ def plot_ansatz_comparison(
     ax: Optional[Axes] = None,
 ) -> Axes:
     """Compare ansatz choices by best error at each distance."""
+    set_presentation_style()
     ax = ax or plt.subplots(figsize=(8, 5))[1]
     df = _filter(vqe_df, molecule=molecule, basis=basis)
     if optimizer is not None:
@@ -294,6 +297,7 @@ def plot_ansatz_comparison(
         ax.plot(
             best["distance"],
             best["abs_error_kcal_mol"],
+            color=CONTRAST_COLORS[i % len(CONTRAST_COLORS)],
             marker=MARKERS[i % len(MARKERS)],
             linewidth=2,
             label=_pretty_label(ansatz),
@@ -319,6 +323,7 @@ def plot_optimizer_comparison(
     ax: Optional[Axes] = None,
 ) -> Axes:
     """Compare optimizers for a fixed molecule, basis, and ansatz."""
+    set_presentation_style()
     ax = ax or plt.subplots(figsize=(8, 5))[1]
     df = _filter(vqe_df, molecule=molecule, basis=basis)
     df = df[df["ansatz"] == ansatz]
@@ -328,6 +333,7 @@ def plot_optimizer_comparison(
         ax.plot(
             best["distance"],
             best["abs_error_kcal_mol"],
+            color=CONTRAST_COLORS[i % len(CONTRAST_COLORS)],
             marker=MARKERS[i % len(MARKERS)],
             linewidth=2,
             label=optimizer.upper(),
@@ -346,6 +352,7 @@ def plot_optimizer_comparison(
 
 def plot_chemical_accuracy_rate(vqe_df: pd.DataFrame, ax: Optional[Axes] = None) -> Axes:
     """Plot chemical accuracy rate by molecule and basis."""
+    set_presentation_style()
     ax = ax or plt.subplots(figsize=(8, 5))[1]
     best = best_vqe_by_point(vqe_df)
     summary = (
@@ -359,7 +366,7 @@ def plot_chemical_accuracy_rate(vqe_df: pd.DataFrame, ax: Optional[Axes] = None)
     summary["rate"] = summary["accurate"] / summary["points"]
     summary["label"] = summary["molecule"].map(MOLECULE_LABELS).fillna(summary["molecule"]) + "\n" + summary["basis"]
 
-    colors = np.where(summary["rate"] >= 0.8, "#009E73", "#D55E00")
+    colors = np.where(summary["rate"] >= 0.8, "#009E73", BRAND_BURGUNDY)
     bars = ax.bar(summary["label"], summary["rate"], color=colors)
     ax.bar_label(bars, labels=[f"{value:.0%}" for value in summary["rate"]], padding=3)
     ax.set_ylim(0, 1.12)
@@ -374,6 +381,7 @@ def plot_chemical_accuracy_rate(vqe_df: pd.DataFrame, ax: Optional[Axes] = None)
 
 def plot_runtime_by_configuration(vqe_df: pd.DataFrame, ax: Optional[Axes] = None) -> Axes:
     """Plot mean runtime by ansatz and optimizer."""
+    set_presentation_style()
     ax = ax or plt.subplots(figsize=(8, 5))[1]
     df = vqe_df[vqe_df["success"].astype(bool)].copy()
     summary = (
@@ -383,7 +391,7 @@ def plot_runtime_by_configuration(vqe_df: pd.DataFrame, ax: Optional[Axes] = Non
     )
     summary["label"] = summary["ansatz"].map(_pretty_label) + "\n" + summary["optimizer"].str.upper()
 
-    bars = ax.barh(summary["label"], summary["mean_time"], color="#56B4E9")
+    bars = ax.barh(summary["label"], summary["mean_time"], color=CONTRAST_COLORS[1])
     ax.bar_label(bars, labels=[f"{value:.1f}s" for value in summary["mean_time"]], padding=3, fontsize=9)
     _style_axes(
         ax,
@@ -413,7 +421,7 @@ def _as_bool_series(series: pd.Series) -> pd.Series:
 def _add_chemical_accuracy_line(ax):
     ax.axhline(
         CHEMICAL_ACCURACY_KCAL_MOL,
-        color="#D55E00",
+        color=BRAND_BURGUNDY,
         linestyle=":",
         linewidth=2,
         label="Precisão química (1 kcal/mol)",
@@ -421,10 +429,7 @@ def _add_chemical_accuracy_line(ax):
 
 
 def _style_axes(ax, title: str, xlabel: str, ylabel: str):
-    ax.set_title(title, fontsize=13)
-    ax.set_xlabel(xlabel)
-    ax.set_ylabel(ylabel)
-    ax.grid(True, alpha=0.25)
+    style_axis(ax, title, xlabel, ylabel)
 
 
 def _pretty_label(value: str) -> str:
