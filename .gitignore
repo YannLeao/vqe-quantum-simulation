@@ -7,6 +7,8 @@ __pycache__/
 *.tmp
 *.temp
 *.bak
+*.zip
+tmp/
 
 # Large or sensitive data (not versioned)
 data/raw/
@@ -14,6 +16,7 @@ data/external/
 outputs/
 models/
 notebooks/experiments/
+notebooks/outputs/
 ai/
 
 # IDE settings (PyCharm/VSCode)
@@ -30,6 +33,11 @@ notebooks/*.ipynb_checkpoints*
 
 # Credentials
 .env
+!.env.example
+
+# Writing artifacts are maintained in a separate repository
+relatorio_final/
+notes/eniac/
 
 # LaTeX build artifacts
 *.aux
